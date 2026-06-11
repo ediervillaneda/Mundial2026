@@ -24,58 +24,6 @@ function filtrarPartidos() {
 }
 
 
-function cerrarModal() {
-    document.getElementById('modal-partido').style.display = 'none';
-}
-
-async function editarPartido(id) {
-    const [data, gruposData] = await Promise.all([
-        fetchJSON(`/api/partido/${id}`),
-        fetchJSON('/api/grupos'),
-    ]);
-    document.getElementById('modal-title').textContent = 'Editar Partido';
-    document.getElementById('match-id').value = id;
-
-    document.getElementById('f-grupo').value = data.group;
-
-    const equipos = gruposData[data.group] || [];
-    const t1 = document.getElementById('f-team1');
-    const t2 = document.getElementById('f-team2');
-    t1.innerHTML = '<option value="">Seleccionar</option>';
-    t2.innerHTML = '<option value="">Seleccionar</option>';
-    equipos.forEach(eq => {
-        t1.innerHTML += `<option value="${eq}">${eq}</option>`;
-        t2.innerHTML += `<option value="${eq}">${eq}</option>`;
-    });
-
-    t1.value = data.team1;
-    t2.value = data.team2;
-    document.getElementById('modal-partido').style.display = 'flex';
-}
-
-async function guardarPartido() {
-    const id = document.getElementById('match-id').value;
-    const datos = {
-        group: document.getElementById('f-grupo').value,
-        team1: document.getElementById('f-team1').value,
-        team2: document.getElementById('f-team2').value,
-    };
-
-    const url = `/api/partido/${id}/actualizar`;
-
-    const result = await fetchJSON(url, {
-        method: 'POST',
-        body: JSON.stringify(datos),
-    });
-
-    if (result.success) {
-        cerrarModal();
-        location.reload();
-    } else {
-        alert('Error al guardar: ' + (result.error || 'desconocido'));
-    }
-}
-
 function parseNullable(val) {
     if (val === '' || val === null || val === undefined) return null;
     const n = parseInt(val);

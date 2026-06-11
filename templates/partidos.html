@@ -24,43 +24,6 @@
         </label>
     </div>
 
-    <div id="modal-partido" class="modal" style="display:none">
-        <div class="modal-content">
-            <span class="modal-close" onclick="cerrarModal()">&times;</span>
-            <h2 id="modal-title">Editar Partido</h2>
-            <input type="hidden" id="match-id" value="">
-            <div class="form-grid">
-                <div class="form-group">
-                    <label>Grupo</label>
-                    <select id="f-grupo" required>
-                        <option value="">Seleccionar grupo</option>
-                        {% for g in grupos %}
-                        <option value="{{ g }}">Grupo {{ g }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Equipo Local</label>
-                    <select id="f-team1" required>
-                        <option value="">Seleccionar</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Equipo Visitante</label>
-                    <select id="f-team2" required>
-                        <option value="">Seleccionar</option>
-                    </select>
-                </div>
-                <div class="edit-score-msg">
-                    ⚽ Edita el marcador directamente en la lista de partidos (clic en el resultado)
-                </div>
-            </div>
-            <div class="form-actions">
-                <button class="btn" onclick="guardarPartido()">Guardar</button>
-                <button class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button>
-            </div>
-        </div>
-    </div>
 
     <div id="lista-partidos" class="partidos-list">
         {% for p in partidos %}
@@ -83,7 +46,6 @@
                 {% if p.time %} {{ p.time }}{% endif %}
             </div>
             <div class="partido-acciones">
-                <button class="btn-small" onclick="editarPartido({{ p.id }})">✏️ Editar</button>
                 <button class="btn-small btn-danger" onclick="eliminarPartido({{ p.id }})">🗑️</button>
             </div>
         </div>
@@ -91,24 +53,5 @@
     </div>
 </div>
 
-<script>
-document.getElementById('f-grupo').addEventListener('change', async function() {
-    const grupo = this.value;
-    const t1 = document.getElementById('f-team1');
-    const t2 = document.getElementById('f-team2');
-    t1.innerHTML = '<option value="">Seleccionar</option>';
-    t2.innerHTML = '<option value="">Seleccionar</option>';
-    if (!grupo) return;
-    try {
-        const data = await fetchJSON('/api/grupos');
-        const teams = data[grupo] || [];
-        teams.forEach(eq => {
-            t1.innerHTML += `<option value="${eq}">${eq}</option>`;
-            t2.innerHTML += `<option value="${eq}">${eq}</option>`;
-        });
-    } catch(e) {
-        console.error(e);
-    }
-});
-</script>
+
 {% endblock %}
