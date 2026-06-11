@@ -66,7 +66,10 @@ def grupo_detalle(letra):
 
 @app.route("/partidos")
 def partidos():
-    partidos = data_mgr.get_todos_partidos()
+    partidos = sorted(
+        data_mgr.get_todos_partidos(),
+        key=lambda m: (m.get("date", ""), m.get("time", ""))
+    )
     grupos = sorted(data_mgr.get_grupos().keys())
     return render_template(
         "partidos.html",
