@@ -49,26 +49,25 @@
             <h2>Partidos del Grupo</h2>
             <div class="partidos-grupo">
                 {% for p in partidos %}
+                {% set parts = p.date.split('-') if p.date else [] %}
                 <div class="match-card {% if p.played %}played{% endif %}" data-id="{{ p.id }}" data-date="{{ p.date }}" data-time="{{ p.time }}" data-jugado="{{ p.played|lower }}">
-                    <div class="match-teams">
-                        <span class="match-team">{{ p.team1 | flag }}</span>
-                        <span class="match-score" onclick="activarEdicionMarcadorGD({{ p.id }})">
-                            {% if p.played %}
-                            <strong>{{ p.fulltime1 }} - {{ p.fulltime2 }}</strong>
-                            {% else %}
-                            <em>vs ✏️</em>
-                            {% endif %}
-                        </span>
-                        <span class="match-team">{{ p.team2 | flag_r }}</span>
-                    </div>
+                    <span class="match-team">{{ p.team1 | flag }}</span>
+                    <span class="match-score" onclick="activarEdicionMarcadorGD({{ p.id }})">
+                        {% if p.played %}
+                        <strong>{{ p.fulltime1 }} – {{ p.fulltime2 }}</strong>
+                        {% else %}
+                        <span class="vs-text">vs</span>
+                        {% endif %}
+                    </span>
+                    <span class="match-team match-team-right">{{ p.team2 | flag_r }}</span>
                     <div class="match-meta">
-                        {% if p.date %}{{ p.date }}{% endif %}
-                        {% if p.time %} {{ p.time }}{% endif %}
+                        {% if parts %}{{ parts[2] }}/{{ parts[1] }}{% endif %}
+                        {% if p.time %} · {{ p.time }}{% endif %}
                     </div>
                     {% if p.played %}
-                    <div class="match-actions">
-                        <button class="btn-edit" onclick="borrarMarcadorGD({{ p.id }})">🗑️</button>
-                    </div>
+                    <button class="match-del-btn" onclick="borrarMarcadorGD({{ p.id }})" title="Borrar marcador">🗑</button>
+                    {% else %}
+                    <span class="match-del-btn"></span>
                     {% endif %}
                 </div>
                 {% endfor %}
@@ -83,20 +82,36 @@
 .ley-verde { color: #2ecc71; }
 .ley-naranja { color: #f39c12; }
 .split-view { display: flex; gap: 2rem; flex-wrap: wrap; }
-.split-left, .split-right { flex: 1; min-width: 300px; }
-.match-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem 1rem; margin-bottom: 0.5rem; display: flex; flex-direction: column; gap: 0.25rem; }
+.split-left { flex: 1; min-width: 300px; }
+.split-right { flex: 1.4; min-width: 320px; }
+
+.match-card {
+    display: grid;
+    grid-template-columns: 1fr 90px 1fr 72px 28px;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--border);
+    border-radius: 8px;
+    padding: 0.65rem 0.85rem;
+    margin-bottom: 0.35rem;
+    transition: border-color 0.2s;
+}
+.match-card:hover { border-color: var(--text-muted); }
 .match-card.played { border-left: 3px solid #2ecc71; }
 .match-card.partido-en-juego { border-left: 4px solid #e74c3c; background: rgba(231,76,60,0.08); animation: pulso 2s ease-in-out infinite; }
 .match-card.partido-en-juego .match-meta { color: #e74c3c; font-weight: 600; }
 .match-card.partido-atrasado { border-left: 4px solid #f39c12; background: rgba(243,156,18,0.08); }
 .match-card.partido-atrasado .match-meta { color: #f39c12; font-weight: 600; }
-.match-teams { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
-.match-team { flex: 1; }
-.match-team:last-child { text-align: right; }
-.match-score { min-width: 60px; text-align: center; font-size: 1.1rem; }
-.match-meta { font-size: 0.8rem; color: var(--text-muted); }
-.match-actions { text-align: right; }
-.btn-edit { background: none; border: none; cursor: pointer; font-size: 0.9rem; padding: 0.2rem 0.5rem; border-radius: 4px; }
-.btn-edit:hover { background: var(--hover); }
+
+.match-team { font-size: 0.88rem; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.match-team-right { text-align: right; }
+.match-score { text-align: center; font-size: 1.05rem; font-weight: 700; background: var(--bg2); border-radius: 6px; padding: 0.28rem 0.4rem; cursor: pointer; }
+.match-score:hover { opacity: 0.8; }
+.match-score strong { letter-spacing: 0.05em; }
+.match-meta { font-size: 0.75rem; color: var(--text-muted); text-align: center; }
+.match-del-btn { background: none; border: none; cursor: pointer; font-size: 0.85rem; color: var(--text-muted); padding: 0; text-align: right; display: block; width: 100%; }
+.match-del-btn:hover { color: var(--accent); }
 </style>
 {% endblock %}
