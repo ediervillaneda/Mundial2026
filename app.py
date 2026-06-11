@@ -29,6 +29,17 @@ def flag_filter(nombre):
     )
 
 
+@app.template_filter("flag_r")
+def flag_r_filter(nombre):
+    code = BANDERAS.get(nombre, "")
+    if not code:
+        return nombre
+    return Markup(
+        f'{nombre}<img src="https://flagcdn.com/w20/{code}.png" width="20" height="15" '
+        f'alt="{nombre}" style="border-radius:2px;vertical-align:middle;margin-left:4px;">'
+    )
+
+
 @app.route("/")
 def index():
     stats = data_mgr.get_estadisticas()
@@ -67,7 +78,10 @@ def grupo_detalle(letra):
     if letra not in grupos:
         return redirect(url_for("grupos"))
     tabla = data_mgr.calcular_tabla_grupo(letra)
-    partidos = data_mgr.get_partidos_grupo(letra)
+    partidos = sorted(
+        data_mgr.get_partidos_grupo(letra),
+        key=lambda m: (m.get("date", ""), m.get("time", ""))
+    )
     return render_template(
         "grupo_detalle.html",
         grupo=letra,
