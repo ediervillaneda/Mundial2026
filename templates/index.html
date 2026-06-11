@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="dashboard">
+    <h1>Panel de Control - Mundial 2026</h1>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-number">{{ stats.partidos_jugados }}</div>
+            <div class="stat-label">Partidos Jugados</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ stats.partidos_pendientes }}</div>
+            <div class="stat-label">Partidos Pendientes</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ stats.goles_totales }}</div>
+            <div class="stat-label">Goles Totales</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ stats.equipos_clasificados }}/32</div>
+            <div class="stat-label">Clasificados a 16avos</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Tabla de Grupos</h2>
+        <div class="grupos-grid">
+            {% for letra in grupos %}
+            <div class="grupo-card">
+                <a href="/grupo/{{ letra }}" class="grupo-header">Grupo {{ letra }}</a>
+                <table class="tabla-mini">
+                    <thead>
+                        <tr><th>#</th><th>Equipo</th><th>PJ</th><th>GC</th><th>DG</th><th>Pts</th></tr>
+                    </thead>
+                    <tbody>
+                        {% set tabla_grupo = tablas[letra] %}
+                        {% for eq in tabla_grupo %}
+                        <tr class="{% if eq.pos <= 2 %}clasificado{% elif eq.pos == 3 and eq.team in mejores_terceros %}tercero-opcion{% endif %}">
+                            <td>{{ eq.pos }}</td>
+                            <td class="td-team">{{ eq.team }}</td>
+                            <td>{{ eq.pj }}</td>
+                            <td>{{ eq.gc }}</td>
+                            <td>{{ eq.gd }}</td>
+                            <td class="td-pts">{{ eq.pts }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Últimos Resultados</h2>
+        {% if ultimos_partidos %}
+        <div class="resultados-list">
+            {% for p in ultimos_partidos %}
+            <div class="resultado-item">
+                <span class="resultado-grupo">Grupo {{ p.group }}</span>
+                <span class="resultado-equipo">{{ p.team1 }}</span>
+                <span class="resultado-marcador">
+                    <strong>{{ p.fulltime1 }} - {{ p.fulltime2 }}</strong>
+                </span>
+                <span class="resultado-equipo">{{ p.team2 }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="empty">Aún no hay partidos jugados. <a href="/partidos">Ingresa resultados</a></p>
+        {% endif %}
+    </div>
+
+    {% if stats.eliminatorias_generadas %}
+    <div class="alert alert-success">
+        ✅ Eliminatorias generadas. <a href="/eliminatorias">Ver bracket</a>
+    </div>
+    {% elif stats.equipos_clasificados == 32 %}
+    <div class="alert alert-info">
+        🎯 ¡32 equipos clasificados! <a href="#" onclick="generarEliminatorias()">Generar Eliminatorias</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="grupos-page">
+    <h1>Fase de Grupos</h1>
+    <div class="grupos-grid">
+        {% for letra in grupos %}
+        <div class="grupo-card full">
+            <a href="/grupo/{{ letra }}" class="grupo-header">Grupo {{ letra }}</a>
+            <table class="tabla-grupo">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Equipo</th>
+                        <th>PJ</th>
+                        <th>G</th>
+                        <th>E</th>
+                        <th>P</th>
+                        <th>GF</th>
+                        <th>GC</th>
+                        <th>DG</th>
+                        <th>Pts</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% set tabla_grupo = tablas[letra] %}
+                    {% for eq in tabla_grupo %}
+                    <tr class="{% if eq.pos <= 2 %}clasificado-row{% elif eq.pos == 3 %}tercero-row{% endif %}">
+                        <td>{{ eq.pos }}</td>
+                        <td class="team-name">{{ eq.team }}</td>
+                        <td>{{ eq.pj }}</td>
+                        <td>{{ eq.pg }}</td>
+                        <td>{{ eq.pe }}</td>
+                        <td>{{ eq.pp }}</td>
+                        <td>{{ eq.gf }}</td>
+                        <td>{{ eq.gc }}</td>
+                        <td>{{ eq.gd }}</td>
+                        <td class="pts">{{ eq.pts }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <a href="/grupo/{{ letra }}" class="btn-small">Ver partidos →</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+.clasificado-row { background: rgba(46, 204, 113, 0.1); }
+.clasificado-row td:first-child { border-left: 3px solid #2ecc71; }
+.tercero-row td:first-child { border-left: 3px solid #f39c12; }
+</style>
+{% endblock %}

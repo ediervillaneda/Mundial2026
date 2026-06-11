@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="partidos-page">
+    <div class="page-header">
+        <h1>Partidos</h1>
+        <button class="btn" onclick="mostrarFormAgregar()">+ Agregar Partido</button>
+    </div>
+
+    <div class="filtros">
+        <label>Filtrar por grupo:
+            <select id="filtro-grupo" onchange="filtrarPartidos()">
+                <option value="">Todos</option>
+                {% for g in grupos %}
+                <option value="{{ g }}">Grupo {{ g }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>
+            <input type="checkbox" id="filtro-jugados" onchange="filtrarPartidos()">
+            Solo jugados
+        </label>
+        <label>
+            <input type="checkbox" id="filtro-pendientes" onchange="filtrarPartidos()">
+            Solo pendientes
+        </label>
+    </div>
+
+    <div id="modal-partido" class="modal" style="display:none">
+        <div class="modal-content">
+            <span class="modal-close" onclick="cerrarModal()">&times;</span>
+            <h2 id="modal-title">Agregar/Editar Partido</h2>
+            <input type="hidden" id="match-id" value="">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Grupo</label>
+                    <select id="f-grupo" required>
+                        <option value="">Seleccionar grupo</option>
+                        {% for g in grupos %}
+                        <option value="{{ g }}">Grupo {{ g }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Equipo Local</label>
+                    <select id="f-team1" required>
+                        <option value="">Seleccionar</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Equipo Visitante</label>
+                    <select id="f-team2" required>
+                        <option value="">Seleccionar</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Fecha</label>
+                    <input type="date" id="f-date">
+                </div>
+                <div class="form-group">
+                    <label>Hora</label>
+                    <input type="time" id="f-time">
+                </div>
+                <div id="score-fields">
+                    <div class="form-group">
+                        <label>Marcador 1er T (Local)</label>
+                        <input type="number" id="f-ht1" min="0" placeholder="-">
+                    </div>
+                    <div class="form-group">
+                        <label>Marcador 1er T (Visitante)</label>
+                        <input type="number" id="f-ht2" min="0" placeholder="-">
+                    </div>
+                    <div class="form-group">
+                        <label>Marcador Final (Local)</label>
+                        <input type="number" id="f-ft1" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Marcador Final (Visitante)</label>
+                        <input type="number" id="f-ft2" min="0">
+                    </div>
+                </div>
+                <div id="edit-score-msg" class="edit-score-msg" style="display:none">
+                    ⚽ Edita el marcador directamente en la lista de partidos (clic en el resultado)
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="btn" onclick="guardarPartido()">Guardar</button>
+                <button class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="lista-partidos" class="partidos-list">
+        {% for p in partidos %}
+        <div class="partido-row" data-grupo="{{ p.group }}" data-jugado="{{ p.played|lower }}">
+            <div class="partido-grupo">Grupo {{ p.group }}</div>
+            <div class="partido-equipos">
+                <span class="partido-equipo">{{ p.team1 }}</span>
+                <span class="partido-marcador" onclick="activarEdicionMarcador({{ p.id }})">
+                    {% if p.played %}
+                    <strong>{{ p.fulltime1 }} - {{ p.fulltime2 }}</strong>
+                    {% if p.halftime1 is not none %}<small>({{ p.halftime1 }}-{{ p.halftime2 }})</small>{% endif %}
+                    {% else %}
+                    <em>vs ✏️</em>
+                    {% endif %}
+                </span>
+                <span class="partido-equipo">{{ p.team2 }}</span>
+            </div>
+            <div class="partido-info">
+                {% if p.date %}{{ p.date }}{% endif %}
+                {% if p.time %} {{ p.time }}{% endif %}
+            </div>
+            <div class="partido-acciones">
+                <button class="btn-small" onclick="editarPartido({{ p.id }})">✏️ Editar</button>
+                <button class="btn-small btn-danger" onclick="eliminarPartido({{ p.id }})">🗑️</button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+document.getElementById('f-grupo').addEventListener('change', async function() {
+    const grupo = this.value;
+    const t1 = document.getElementById('f-team1');
+    const t2 = document.getElementById('f-team2');
+    t1.innerHTML = '<option value="">Seleccionar</option>';
+    t2.innerHTML = '<option value="">Seleccionar</option>';
+    if (!grupo) return;
+    try {
+        const data = await fetchJSON('/api/grupos');
+        const teams = data[grupo] || [];
+        teams.forEach(eq => {
+            t1.innerHTML += `<option value="${eq}">${eq}</option>`;
+            t2.innerHTML += `<option value="${eq}">${eq}</option>`;
+        });
+    } catch(e) {
+        console.error(e);
+    }
+});
+</script>
+{% endblock %}

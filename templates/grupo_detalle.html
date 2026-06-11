@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="grupo-detalle">
+    <a href="/grupos" class="back-link">← Todos los grupos</a>
+    <h1>Grupo {{ grupo }}</h1>
+
+    <div class="split-view">
+        <div class="split-left">
+            <h2>Tabla de Posiciones</h2>
+            <table class="tabla-grupo">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Equipo</th>
+                        <th>PJ</th>
+                        <th>G</th>
+                        <th>E</th>
+                        <th>P</th>
+                        <th>GF</th>
+                        <th>GC</th>
+                        <th>DG</th>
+                        <th>Pts</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for eq in tabla %}
+                    <tr class="{% if eq.pos <= 2 %}clasificado-row{% endif %}">
+                        <td>{{ eq.pos }}</td>
+                        <td class="team-name">{{ eq.team }}</td>
+                        <td>{{ eq.pj }}</td>
+                        <td>{{ eq.pg }}</td>
+                        <td>{{ eq.pe }}</td>
+                        <td>{{ eq.pp }}</td>
+                        <td>{{ eq.gf }}</td>
+                        <td>{{ eq.gc }}</td>
+                        <td>{{ eq.gd }}</td>
+                        <td class="pts">{{ eq.pts }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="leyenda">
+                <span class="ley-verde">■</span> Clasifica a 16avos
+                <span class="ley-naranja">■</span> Opción a mejor tercero
+            </div>
+        </div>
+
+        <div class="split-right">
+            <h2>Partidos del Grupo</h2>
+            <div class="partidos-grupo">
+                {% for p in partidos %}
+                <div class="match-card {% if p.played %}played{% endif %}" data-id="{{ p.id }}">
+                    <div class="match-teams">
+                        <span class="match-team">{{ p.team1 }}</span>
+                        <span class="match-score" onclick="activarEdicionMarcadorGD({{ p.id }})">
+                            {% if p.played %}
+                            <strong>{{ p.fulltime1 }} - {{ p.fulltime2 }}</strong>
+                            {% else %}
+                            <em>vs ✏️</em>
+                            {% endif %}
+                        </span>
+                        <span class="match-team">{{ p.team2 }}</span>
+                    </div>
+                    <div class="match-meta">
+                        {% if p.date %}{{ p.date }}{% endif %}
+                        {% if p.time %} {{ p.time }}{% endif %}
+                    </div>
+                    <div class="match-actions">
+                        <button class="btn-edit" onclick="activarEdicionMarcadorGD({{ p.id }})">✏️</button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.clasificado-row { background: rgba(46, 204, 113, 0.1); }
+.clasificado-row td:first-child { border-left: 3px solid #2ecc71; }
+.ley-verde { color: #2ecc71; }
+.ley-naranja { color: #f39c12; }
+.split-view { display: flex; gap: 2rem; flex-wrap: wrap; }
+.split-left, .split-right { flex: 1; min-width: 300px; }
+.match-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem 1rem; margin-bottom: 0.5rem; display: flex; flex-direction: column; gap: 0.25rem; }
+.match-card.played { border-left: 3px solid #2ecc71; }
+.match-teams { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.match-team { flex: 1; }
+.match-team:last-child { text-align: right; }
+.match-score { min-width: 60px; text-align: center; font-size: 1.1rem; }
+.match-meta { font-size: 0.8rem; color: var(--text-muted); }
+.match-actions { text-align: right; }
+.btn-edit { background: none; border: none; cursor: pointer; font-size: 0.9rem; padding: 0.2rem 0.5rem; border-radius: 4px; }
+.btn-edit:hover { background: var(--hover); }
+</style>
+{% endblock %}
