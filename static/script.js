@@ -26,7 +26,7 @@ function filtrarPartidos() {
 
 function actualizarEstadosPartidos() {
     const now = Date.now();
-    document.querySelectorAll('.partido-row').forEach(row => {
+    document.querySelectorAll('.partido-row, .match-card').forEach(row => {
         const date = row.dataset.date;
         const time = row.dataset.time;
         const played = row.dataset.jugado === 'true';
@@ -42,7 +42,7 @@ function actualizarEstadosPartidos() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    if (document.getElementById('lista-partidos')) {
+    if (document.getElementById('lista-partidos') || document.querySelector('.match-card')) {
         actualizarEstadosPartidos();
         setInterval(actualizarEstadosPartidos, 60000);
     }
