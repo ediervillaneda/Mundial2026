@@ -1016,19 +1016,19 @@
       "matches": [
         {
           "id": "KO-1",
-          "team1": "México",
-          "team2": "Arabia Saudita",
-          "score1": 2,
-          "score2": 1,
+          "team1": null,
+          "team2": null,
+          "score1": null,
+          "score2": null,
           "penalties1": null,
           "penalties2": null,
-          "winner": "México",
-          "played": true
+          "winner": null,
+          "played": false
         },
         {
           "id": "KO-2",
-          "team1": "Canadá",
-          "team2": "Egipto",
+          "team1": null,
+          "team2": null,
           "score1": null,
           "score2": null,
           "penalties1": null,
@@ -1038,8 +1038,8 @@
         },
         {
           "id": "KO-3",
-          "team1": "Brasil",
-          "team2": "Túnez",
+          "team1": null,
+          "team2": null,
           "score1": null,
           "score2": null,
           "penalties1": null,
@@ -1049,8 +1049,8 @@
         },
         {
           "id": "KO-4",
-          "team1": "EE. UU.",
-          "team2": "Costa de Marfil",
+          "team1": null,
+          "team2": null,
           "score1": null,
           "score2": null,
           "penalties1": null,
@@ -1060,8 +1060,8 @@
         },
         {
           "id": "KO-5",
-          "team1": "Alemania",
-          "team2": "Australia",
+          "team1": null,
+          "team2": null,
           "score1": null,
           "score2": null,
           "penalties1": null,
@@ -1071,8 +1071,8 @@
         },
         {
           "id": "KO-6",
-          "team1": "Países Bajos",
-          "team2": "Haití",
+          "team1": null,
+          "team2": null,
           "score1": null,
           "score2": null,
           "penalties1": null,
@@ -1082,8 +1082,8 @@
         },
         {
           "id": "KO-7",
-          "team1": "Bélgica",
-          "team2": "Catar",
+          "team1": null,
+          "team2": null,
           "score1": null,
           "score2": null,
           "penalties1": null,
@@ -1093,8 +1093,8 @@
         },
         {
           "id": "KO-8",
-          "team1": "España",
-          "team2": "Corea del Sur",
+          "team1": null,
+          "team2": null,
           "score1": null,
           "score2": null,
           "penalties1": null,
@@ -1104,8 +1104,8 @@
         },
         {
           "id": "KO-9",
-          "team1": "Francia",
-          "team2": "Croacia",
+          "team1": null,
+          "team2": null,
           "score1": null,
           "score2": null,
           "penalties1": null,
@@ -1115,8 +1115,8 @@
         },
         {
           "id": "KO-10",
-          "team1": "Argentina",
-          "team2": "Colombia",
+          "team1": null,
+          "team2": null,
           "score1": null,
           "score2": null,
           "penalties1": null,
@@ -1126,8 +1126,8 @@
         },
         {
           "id": "KO-11",
-          "team1": "Portugal",
-          "team2": "Argelia",
+          "team1": null,
+          "team2": null,
           "score1": null,
           "score2": null,
           "penalties1": null,
@@ -1137,8 +1137,8 @@
         },
         {
           "id": "KO-12",
-          "team1": "Inglaterra",
-          "team2": "Senegal",
+          "team1": null,
+          "team2": null,
           "score1": null,
           "score2": null,
           "penalties1": null,
@@ -1148,8 +1148,8 @@
         },
         {
           "id": "KO-13",
-          "team1": "Sudáfrica",
-          "team2": "Uruguay",
+          "team1": null,
+          "team2": null,
           "score1": null,
           "score2": null,
           "penalties1": null,
@@ -1159,8 +1159,8 @@
         },
         {
           "id": "KO-14",
-          "team1": "Suiza",
-          "team2": "Irán",
+          "team1": null,
+          "team2": null,
           "score1": null,
           "score2": null,
           "penalties1": null,
@@ -1170,8 +1170,8 @@
         },
         {
           "id": "KO-15",
-          "team1": "Marruecos",
-          "team2": "Japón",
+          "team1": null,
+          "team2": null,
           "score1": null,
           "score2": null,
           "penalties1": null,
@@ -1181,8 +1181,8 @@
         },
         {
           "id": "KO-16",
-          "team1": "Paraguay",
-          "team2": "Ecuador",
+          "team1": null,
+          "team2": null,
           "score1": null,
           "score2": null,
           "penalties1": null,
@@ -1196,7 +1196,7 @@
       "matches": [
         {
           "id": "KO-1",
-          "team1": "México",
+          "team1": null,
           "team2": null,
           "score1": null,
           "score2": null,
@@ -1379,5 +1379,5 @@
       "played": false
     }
   },
-  "knockout_generated": true
+  "knockout_generated": false
 }
