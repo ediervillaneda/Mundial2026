@@ -116,6 +116,15 @@ function activarEdicionMarcador(id) {
     document.getElementById(`inline-s1-${id}`)?.focus();
 }
 
+async function borrarMarcadorGD(id) {
+    if (!confirm('¿Borrar marcador de este partido?')) return;
+    await fetchJSON(`/api/partido/${id}/actualizar`, {
+        method: 'POST',
+        body: JSON.stringify({ fulltime1: null, fulltime2: null, halftime1: null, halftime2: null }),
+    });
+    location.reload();
+}
+
 function activarEdicionMarcadorGD(id) {
     const card = document.querySelector(`.match-card[data-id="${id}"]`);
     if (!card) return;

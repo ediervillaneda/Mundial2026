@@ -65,9 +65,11 @@
                         {% if p.date %}{{ p.date }}{% endif %}
                         {% if p.time %} {{ p.time }}{% endif %}
                     </div>
+                    {% if p.played %}
                     <div class="match-actions">
-                        <button class="btn-edit" onclick="activarEdicionMarcadorGD({{ p.id }})">✏️</button>
+                        <button class="btn-edit" onclick="borrarMarcadorGD({{ p.id }})">🗑️</button>
                     </div>
+                    {% endif %}
                 </div>
                 {% endfor %}
             </div>

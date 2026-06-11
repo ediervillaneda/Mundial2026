@@ -225,6 +225,8 @@ class MundialData:
                 and partido.get("fulltime2") is not None
             ):
                 partido["played"] = True
+            else:
+                partido["played"] = False
             self.guardar()
             return True
         return False
