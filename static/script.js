@@ -31,11 +31,11 @@ function actualizarEstadosPartidos() {
         const time = row.dataset.time;
         const played = row.dataset.jugado === 'true';
         row.classList.remove('partido-en-juego', 'partido-atrasado');
-        if (played || !date || !time) return;
+        if (!date || !time) return;
         const kickoff = new Date(`${date}T${time}:00-05:00`).getTime();
         if (now >= kickoff && now < kickoff + 2 * 3600 * 1000) {
             row.classList.add('partido-en-juego');
-        } else if (now >= kickoff + 2 * 3600 * 1000) {
+        } else if (!played && now >= kickoff + 2 * 3600 * 1000) {
             row.classList.add('partido-atrasado');
         }
     });
