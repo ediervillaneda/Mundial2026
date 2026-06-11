@@ -24,34 +24,34 @@
         </label>
     </div>
 
-
     <div id="lista-partidos" class="partidos-list">
+        {% set ns = namespace(last_date='') %}
         {% for p in partidos %}
-        <div class="partido-row" data-grupo="{{ p.group }}" data-jugado="{{ p.played|lower }}" data-date="{{ p.date }}" data-time="{{ p.time }}">
-            <div class="partido-grupo">Grupo {{ p.group }}</div>
-            <div class="partido-equipos">
+            {% if p.date != ns.last_date %}
+                {% set ns.last_date = p.date %}
+                {% set parts = p.date.split('-') %}
+                <div class="fecha-separador" data-sep-date="{{ p.date }}">
+                    {{ parts[2] }}/{{ parts[1] }}/{{ parts[0] }}
+                </div>
+            {% endif %}
+            <div class="partido-row" data-grupo="{{ p.group }}" data-jugado="{{ p.played|lower }}" data-date="{{ p.date }}" data-time="{{ p.time }}">
+                <div class="partido-grupo">{{ p.group }}</div>
                 <span class="partido-equipo">{{ p.team1 | flag }}</span>
                 <span class="partido-marcador" onclick="activarEdicionMarcador({{ p.id }})">
                     {% if p.played %}
-                    <strong>{{ p.fulltime1 }} - {{ p.fulltime2 }}</strong>
+                    <strong>{{ p.fulltime1 }} – {{ p.fulltime2 }}</strong>
                     {% if p.halftime1 is not none %}<small>({{ p.halftime1 }}-{{ p.halftime2 }})</small>{% endif %}
                     {% else %}
-                    <em>vs ✏️</em>
+                    <span class="vs-text">vs</span>
                     {% endif %}
                 </span>
-                <span class="partido-equipo">{{ p.team2 | flag_r }}</span>
+                <span class="partido-equipo partido-equipo-right">{{ p.team2 | flag_r }}</span>
+                <div class="partido-hora">{% if p.time %}{{ p.time }}{% endif %}</div>
+                <div class="partido-acciones">
+                    <button class="btn-small btn-danger" onclick="eliminarPartido({{ p.id }})">🗑</button>
+                </div>
             </div>
-            <div class="partido-info">
-                {% if p.date %}{{ p.date }}{% endif %}
-                {% if p.time %} {{ p.time }}{% endif %}
-            </div>
-            <div class="partido-acciones">
-                <button class="btn-small btn-danger" onclick="eliminarPartido({{ p.id }})">🗑️</button>
-            </div>
-        </div>
         {% endfor %}
     </div>
 </div>
-
-
 {% endblock %}

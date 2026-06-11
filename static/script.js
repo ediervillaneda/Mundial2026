@@ -21,6 +21,13 @@ function filtrarPartidos() {
         if (soloPendientes && jugado) show = false;
         row.style.display = show ? 'grid' : 'none';
     });
+
+    document.querySelectorAll('.fecha-separador').forEach(sep => {
+        const date = sep.dataset.sepDate;
+        const hasVisible = [...document.querySelectorAll(`.partido-row[data-date="${date}"]`)]
+            .some(r => r.style.display !== 'none');
+        sep.style.display = hasVisible ? '' : 'none';
+    });
 }
 
 
