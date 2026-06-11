@@ -24,6 +24,30 @@ function filtrarPartidos() {
 }
 
 
+function actualizarEstadosPartidos() {
+    const now = Date.now();
+    document.querySelectorAll('.partido-row').forEach(row => {
+        const date = row.dataset.date;
+        const time = row.dataset.time;
+        const played = row.dataset.jugado === 'true';
+        row.classList.remove('partido-en-juego', 'partido-atrasado');
+        if (played || !date || !time) return;
+        const kickoff = new Date(`${date}T${time}:00-05:00`).getTime();
+        if (now >= kickoff && now < kickoff + 2 * 3600 * 1000) {
+            row.classList.add('partido-en-juego');
+        } else if (now >= kickoff + 2 * 3600 * 1000) {
+            row.classList.add('partido-atrasado');
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (document.getElementById('lista-partidos')) {
+        actualizarEstadosPartidos();
+        setInterval(actualizarEstadosPartidos, 60000);
+    }
+});
+
 function parseNullable(val) {
     if (val === '' || val === null || val === undefined) return null;
     const n = parseInt(val);

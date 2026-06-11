@@ -27,7 +27,7 @@
 
     <div id="lista-partidos" class="partidos-list">
         {% for p in partidos %}
-        <div class="partido-row" data-grupo="{{ p.group }}" data-jugado="{{ p.played|lower }}">
+        <div class="partido-row" data-grupo="{{ p.group }}" data-jugado="{{ p.played|lower }}" data-date="{{ p.date }}" data-time="{{ p.time }}">
             <div class="partido-grupo">Grupo {{ p.group }}</div>
             <div class="partido-equipos">
                 <span class="partido-equipo">{{ p.team1 }}</span>
