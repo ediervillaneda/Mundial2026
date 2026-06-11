@@ -175,6 +175,14 @@ def api_asignar_ko():
     return jsonify({"success": True})
 
 
+@app.route("/api/knockout-data")
+def api_knockout_data():
+    return jsonify({
+        "knockout": data_mgr.data["knockout"],
+        "knockout_generated": data_mgr.data["knockout_generated"],
+    })
+
+
 @app.route("/api/estadisticas")
 def api_estadisticas():
     return jsonify(data_mgr.get_estadisticas())

@@ -201,27 +201,26 @@ async function generarEliminatorias() {
     if (!confirm('¿Generar bracket de eliminatorias? Se emparejarán los 32 equipos.')) return;
     const result = await fetchJSON('/api/eliminatorias/generar', { method: 'POST' });
     if (result.success) {
-        location.reload();
+        document.getElementById('clasificados-section')?.style && (document.getElementById('clasificados-section').style.display = 'none');
+        await fetchAndRenderBracket();
     } else {
         alert('Error: ' + (result.error || 'No se pudo generar'));
-        if (result.error?.includes('32')) {
-            location.reload();
-        }
     }
 }
 
 async function reiniciarEliminatorias() {
     if (!confirm('¿Reiniciar eliminatorias? Se perderán los resultados actuales.')) return;
     await fetchJSON('/api/eliminatorias/reiniciar', { method: 'POST' });
-    location.reload();
+    document.getElementById('clasificados-section')?.style && (document.getElementById('clasificados-section').style.display = '');
+    await fetchAndRenderBracket();
 }
 
 async function guardarKOMatch(ronda, idx) {
     const prefix = `score-${ronda}-${idx}-`;
-    const s1Raw = document.getElementById(prefix + '1').value;
-    const s2Raw = document.getElementById(prefix + '2').value;
+    const s1Raw = document.getElementById(prefix + '1')?.value;
+    const s2Raw = document.getElementById(prefix + '2')?.value;
 
-    if (s1Raw === '' || s2Raw === '') {
+    if (s1Raw === '' || s1Raw === undefined || s2Raw === '' || s2Raw === undefined) {
         alert('Ingresa los marcadores antes de guardar.');
         return;
     }
@@ -229,11 +228,10 @@ async function guardarKOMatch(ronda, idx) {
     const s1 = parseInt(s1Raw);
     const s2 = parseInt(s2Raw);
 
-    const penPrefix = `pen-${ronda}-${idx}-`;
-    const pen1El = document.getElementById(penPrefix + '1');
-    const pen2El = document.getElementById(penPrefix + '2');
-    const pen1 = pen1El ? (parseInt(pen1El.value) || null) : null;
-    const pen2 = pen2El ? (parseInt(pen2El.value) || null) : null;
+    const pen1El = document.getElementById(`pen-${ronda}-${idx}-1`);
+    const pen2El = document.getElementById(`pen-${ronda}-${idx}-2`);
+    const pen1 = pen1El && pen1El.value !== '' ? parseInt(pen1El.value) : null;
+    const pen2 = pen2El && pen2El.value !== '' ? parseInt(pen2El.value) : null;
 
     const matchData = { score1: s1, score2: s2 };
     if (pen1 !== null && pen2 !== null) {
@@ -247,8 +245,174 @@ async function guardarKOMatch(ronda, idx) {
     });
 
     if (result.success) {
-        location.reload();
+        await fetchAndRenderBracket();
     } else {
         alert('Error al guardar');
     }
 }
+
+// ── Bracket Visual ────────────────────────────────────────────
+
+function renderMatch(match, ronda, idx) {
+    const t1 = match.team1 || '—';
+    const t2 = match.team2 || '—';
+    const hasTeams = !!(match.team1 && match.team2);
+    const w = match.winner;
+    const n1 = 'bkt-name' + (match.team1 ? ' assigned' : '') + (w && w === match.team1 ? ' winner' : '');
+    const n2 = 'bkt-name' + (match.team2 ? ' assigned' : '') + (w && w === match.team2 ? ' winner' : '');
+    const s1 = match.score1 !== null && match.score1 !== undefined ? match.score1 : '';
+    const s2 = match.score2 !== null && match.score2 !== undefined ? match.score2 : '';
+    const p1 = match.penalties1 !== null && match.penalties1 !== undefined ? match.penalties1 : '';
+    const p2 = match.penalties2 !== null && match.penalties2 !== undefined ? match.penalties2 : '';
+    const penDisplay = (match.penalties1 !== null && match.penalties1 !== undefined) ? 'flex' : 'none';
+    const isFinal = ronda === 'final' || ronda === 'third_place';
+    const cardExtra = ronda === 'final' ? 'bkt-final' : ronda === 'third_place' ? 'bkt-third' : '';
+    const dis = hasTeams ? '' : 'disabled';
+
+    return `<div class="bkt-card ${match.played ? 'bkt-played' : ''} ${cardExtra}">
+        <div class="bkt-team">
+            <span class="${n1}">${t1}</span>
+            <input type="number" class="bkt-score" id="score-${ronda}-${idx}-1" value="${s1}" min="0" placeholder="0" ${dis}>
+            <span class="bkt-sep">-</span>
+            <input type="number" class="bkt-score" id="score-${ronda}-${idx}-2" value="${s2}" min="0" placeholder="0" ${dis}>
+        </div>
+        <div class="bkt-team"><span class="${n2}">${t2}</span></div>
+        <div class="bkt-penales" id="bkt-pen-${ronda}-${idx}" style="display:${penDisplay}">
+            Pen:
+            <input type="number" class="bkt-pen" id="pen-${ronda}-${idx}-1" value="${p1}" min="0" placeholder="-" ${dis}>
+            <span>-</span>
+            <input type="number" class="bkt-pen" id="pen-${ronda}-${idx}-2" value="${p2}" min="0" placeholder="-" ${dis}>
+        </div>
+        <div class="bkt-actions">
+            ${hasTeams ? `<button class="btn-tiny" data-action="save" data-ronda="${ronda}" data-idx="${idx}">💾</button>` : ''}
+            ${hasTeams && !isFinal ? `<button class="btn-tiny" data-action="toggle-pen" data-ronda="${ronda}" data-idx="${idx}">⚽</button>` : ''}
+            <button class="btn-tiny" data-action="assign" data-ronda="${ronda}" data-idx="${idx}">👤</button>
+        </div>
+    </div>`;
+}
+
+function renderPairs(matches, ronda, offset) {
+    let html = '';
+    for (let i = 0; i < matches.length; i += 2) {
+        const m2 = i + 1 < matches.length ? matches[i + 1] : null;
+        html += `<div class="bkt-pair">
+            <div class="bkt-match-wrap">${renderMatch(matches[i], ronda, offset + i)}</div>
+            ${m2 ? `<div class="bkt-match-wrap">${renderMatch(m2, ronda, offset + i + 1)}</div>` : ''}
+        </div>`;
+    }
+    return html;
+}
+
+function col(matches, ronda, offset, label) {
+    return `<div class="bkt-col">
+        <div class="bkt-col-label">${label}</div>
+        ${renderPairs(matches, ronda, offset)}
+    </div>`;
+}
+
+function singleCol(match, ronda, offset, label) {
+    return `<div class="bkt-col bkt-col-single">
+        <div class="bkt-col-label">${label}</div>
+        <div class="bkt-pair">
+            <div class="bkt-match-wrap">${renderMatch(match, ronda, offset)}</div>
+        </div>
+    </div>`;
+}
+
+function renderBracket(ko) {
+    const r32 = ko.round_of_32.matches;
+    const r16 = ko.round_of_16.matches;
+    const qf  = ko.quarter_finals.matches;
+    const sf  = ko.semi_finals.matches;
+
+    const leftHalf = `<div class="bkt-half bkt-half-l">
+        ${col(r32.slice(0, 8), 'round_of_32', 0, '16avos')}
+        ${col(r16.slice(0, 4), 'round_of_16', 0, 'Octavos')}
+        ${col(qf.slice(0, 2), 'quarter_finals', 0, 'Cuartos')}
+        ${singleCol(sf[0], 'semi_finals', 0, 'Semis')}
+    </div>`;
+
+    const center = `<div class="bkt-center">
+        <div>
+            <div class="bkt-center-label">Final</div>
+            ${renderMatch(ko.final, 'final', 0)}
+        </div>
+        <div>
+            <div class="bkt-center-label">3er Puesto</div>
+            ${renderMatch(ko.third_place, 'third_place', 0)}
+        </div>
+    </div>`;
+
+    const rightHalf = `<div class="bkt-half bkt-half-r">
+        ${singleCol(sf[1], 'semi_finals', 1, 'Semis')}
+        ${col(qf.slice(2, 4), 'quarter_finals', 2, 'Cuartos')}
+        ${col(r16.slice(4, 8), 'round_of_16', 4, 'Octavos')}
+        ${col(r32.slice(8, 16), 'round_of_32', 8, '16avos')}
+    </div>`;
+
+    return `<div class="bkt-wrapper">${leftHalf}${center}${rightHalf}</div>`;
+}
+
+async function fetchAndRenderBracket() {
+    try {
+        const { knockout, knockout_generated } = await fetchJSON('/api/knockout-data');
+        const root = document.getElementById('bracket-root');
+        if (!root) return;
+
+        const btnGen  = document.getElementById('btn-generar');
+        const btnReg  = document.getElementById('btn-regenerar');
+        const clsSec  = document.getElementById('clasificados-section');
+
+        if (btnGen)  btnGen.style.display  = knockout_generated ? 'none' : '';
+        if (btnReg)  btnReg.style.display  = knockout_generated ? '' : 'none';
+        if (clsSec)  clsSec.style.display  = knockout_generated ? 'none' : '';
+
+        root.innerHTML = knockout_generated ? renderBracket(knockout) : '';
+    } catch (err) {
+        console.error('fetchAndRenderBracket:', err);
+    }
+}
+
+function togglePenalesBkt(ronda, idx) {
+    const el = document.getElementById(`bkt-pen-${ronda}-${idx}`);
+    if (!el) return;
+    el.style.display = el.style.display === 'none' ? 'flex' : 'none';
+}
+
+function asignarEquipoBkt(ronda, idx) {
+    const equipos = (window._clasificadosData || []).map(e => e.team);
+    const sel = prompt(`Selecciona equipo (escribe el nombre):\n\n${equipos.map((e, i) => `${i + 1}. ${e}`).join('\n')}`);
+    if (!sel) return;
+
+    const equipo = equipos.find(e => e.toLowerCase().includes(sel.toLowerCase()));
+    if (!equipo) { alert('Equipo no encontrado.'); return; }
+
+    const slot = prompt('¿Posición? (team1 o team2)');
+    if (!slot || !['team1', 'team2'].includes(slot)) return;
+
+    fetchJSON('/api/eliminatorias/asignar', {
+        method: 'POST',
+        body: JSON.stringify({ ronda, idx, slot, team: equipo }),
+    }).then(d => {
+        if (d.success) fetchAndRenderBracket();
+        else alert('Error: ' + d.error);
+    });
+}
+
+// Event delegation: survives DOM re-renders
+document.addEventListener('DOMContentLoaded', () => {
+    const root = document.getElementById('bracket-root');
+    if (!root) return;
+
+    root.addEventListener('click', e => {
+        const btn = e.target.closest('[data-action]');
+        if (!btn) return;
+        const { action, ronda } = btn.dataset;
+        const idx = +btn.dataset.idx;
+        if (action === 'save')       guardarKOMatch(ronda, idx);
+        if (action === 'toggle-pen') togglePenalesBkt(ronda, idx);
+        if (action === 'assign')     asignarEquipoBkt(ronda, idx);
+    });
+
+    fetchAndRenderBracket();
+});

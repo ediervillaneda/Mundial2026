@@ -4,177 +4,71 @@
     <div class="page-header">
         <h1>Eliminatorias</h1>
         <div class="header-actions">
-            {% if not generado and clasificados.total|length == 32 %}
-            <button class="btn" onclick="generarEliminatorias()">🎯 Generar Bracket</button>
-            {% elif generado %}
-            <button class="btn btn-secondary" onclick="reiniciarEliminatorias()">🔄 Re-generar</button>
+            <button class="btn" id="btn-generar" onclick="generarEliminatorias()"
+                {% if generado or clasificados.total|length < 32 %}style="display:none"{% endif %}>
+                🎯 Generar Bracket
+            </button>
+            <button class="btn btn-secondary" id="btn-regenerar" onclick="reiniciarEliminatorias()"
+                {% if not generado %}style="display:none"{% endif %}>
+                🔄 Re-generar
+            </button>
+        </div>
+    </div>
+
+    <div id="clasificados-section" {% if generado %}style="display:none"{% endif %}>
+        <div class="clasificados-section">
+            <h2>Clasificados a 16avos de Final</h2>
+            {% if clasificados.total|length < 32 %}
+            <div class="alert alert-warning">
+                ⚠️ Se necesitan 32 clasificados. Actualmente: {{ clasificados.total|length }}
+                (<strong>{{ clasificados.primeros|length }}</strong> primeros,
+                 <strong>{{ clasificados.segundos|length }}</strong> segundos,
+                 <strong>{{ clasificados.terceros|length }}</strong> mejores terceros)
+            </div>
+            {% else %}
+            <div class="alert alert-success">✅ 32 equipos clasificados. ¡Genera el bracket!</div>
+            {% endif %}
+
+            {% if clasificados.primeros %}
+            <h3>🥇 Primeros de Grupo ({{ clasificados.primeros|length }})</h3>
+            <div class="clasificados-list">
+                {% for eq in clasificados.primeros %}
+                <span class="team-chip gold">#{{ loop.index }} {{ eq.team }} <small>({{ eq.pts }}pts, {{ eq.grupo }})</small></span>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if clasificados.segundos %}
+            <h3>🥈 Segundos de Grupo ({{ clasificados.segundos|length }})</h3>
+            <div class="clasificados-list">
+                {% for eq in clasificados.segundos %}
+                <span class="team-chip silver">#{{ loop.index + clasificados.primeros|length }} {{ eq.team }} <small>({{ eq.pts }}pts, {{ eq.grupo }})</small></span>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if clasificados.terceros %}
+            <h3>🥉 Mejores Terceros ({{ clasificados.terceros|length }})</h3>
+            <div class="clasificados-list">
+                {% for eq in clasificados.terceros %}
+                <span class="team-chip bronze">#{{ loop.index + clasificados.primeros|length + clasificados.segundos|length }} {{ eq.team }} <small>({{ eq.pts }}pts, {{ eq.grupo }})</small></span>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if clasificados.total|length == 32 %}
+            <div style="text-align:center;margin-top:2rem">
+                <button class="btn btn-lg" onclick="generarEliminatorias()">🎯 Generar Bracket de Eliminatorias</button>
+                <p class="help-text">Empareja 1° vs 32°, 2° vs 31°, etc.</p>
+            </div>
             {% endif %}
         </div>
     </div>
 
-    {% if not generado %}
-    <div class="clasificados-section">
-        <h2>Clasificados a 16avos de Final</h2>
-        {% if clasificados.total|length < 32 %}
-        <div class="alert alert-warning">
-            ⚠️ Se necesitan 32 clasificados. Actualmente: {{ clasificados.total|length }}
-            (<strong>{{ clasificados.primeros|length }}</strong> primeros,
-             <strong>{{ clasificados.segundos|length }}</strong> segundos,
-             <strong>{{ clasificados.terceros|length }}</strong> mejores terceros)
-        </div>
-        {% else %}
-        <div class="alert alert-success">✅ 32 equipos clasificados. ¡Genera el bracket!</div>
-        {% endif %}
-
-        {% if clasificados.primeros %}
-        <h3>🥇 Primeros de Grupo ({{ clasificados.primeros|length }})</h3>
-        <div class="clasificados-list">
-            {% for eq in clasificados.primeros %}
-            <span class="team-chip gold">#{{ loop.index }} {{ eq.team }} <small>({{ eq.pts }}pts, {{ eq.grupo }})</small></span>
-            {% endfor %}
-        </div>
-        {% endif %}
-
-        {% if clasificados.segundos %}
-        <h3>🥈 Segundos de Grupo ({{ clasificados.segundos|length }})</h3>
-        <div class="clasificados-list">
-            {% for eq in clasificados.segundos %}
-            <span class="team-chip silver">#{{ loop.index + clasificados.primeros|length }} {{ eq.team }} <small>({{ eq.pts }}pts, {{ eq.grupo }})</small></span>
-            {% endfor %}
-        </div>
-        {% endif %}
-
-        {% if clasificados.terceros %}
-        <h3>🥉 Mejores Terceros ({{ clasificados.terceros|length }})</h3>
-        <div class="clasificados-list">
-            {% for eq in clasificados.terceros %}
-            <span class="team-chip bronze">#{{ loop.index + clasificados.primeros|length + clasificados.segundos|length }} {{ eq.team }} <small>({{ eq.pts }}pts, {{ eq.grupo }})</small></span>
-            {% endfor %}
-        </div>
-        {% endif %}
-
-        {% if clasificados.total|length == 32 %}
-        <div style="text-align:center;margin-top:2rem">
-            <button class="btn btn-lg" onclick="generarEliminatorias()">🎯 Generar Bracket de Eliminatorias</button>
-            <p class="help-text">Empareja 1° vs 32°, 2° vs 31°, etc.</p>
-        </div>
-        {% endif %}
-    </div>
-    {% endif %}
-
-    {% if generado %}
-    <div class="bracket-container">
-        <h2>Bracket - Copa Mundial 2026</h2>
-        <div class="bracket-scroll">
-            <div class="bracket" id="bracket">
-                {% for ronda_key in rondas_order %}
-                {% set ronda_info = rondas_info[ronda_key] %}
-                {% set partidos_ko = knockout[ronda_key] %}
-                {% if ronda_key in ('third_place', 'final') %}
-                {% set ko_match = partidos_ko %}
-                <div class="ronda-col final-col">
-                    <div class="ronda-header">{{ ronda_info.label }}</div>
-                    <div class="match-ko final-match" data-ronda="{{ ronda_key }}" data-idx="0">
-                        <div class="ko-teams">
-                            <div class="ko-team {% if ko_match.winner and ko_match.winner == ko_match.team1 %}winner{% endif %}" data-ronda="{{ ronda_key }}" data-idx="0" data-slot="team1">
-                                {{ ko_match.team1 or '—' }}
-                            </div>
-                            <div class="ko-vs">vs</div>
-                            <div class="ko-team {% if ko_match.winner and ko_match.winner == ko_match.team2 %}winner{% endif %}" data-ronda="{{ ronda_key }}" data-idx="0" data-slot="team2">
-                                {{ ko_match.team2 or '—' }}
-                            </div>
-                        </div>
-                        <div class="ko-score">
-                            <input type="number" class="ko-input" id="score-{{ ronda_key }}-0-1" value="{{ ko_match.score1 or '' }}" min="0" placeholder="0" data-ronda="{{ ronda_key }}" data-idx="0" data-team="1">
-                            <span>-</span>
-                            <input type="number" class="ko-input" id="score-{{ ronda_key }}-0-2" value="{{ ko_match.score2 or '' }}" min="0" placeholder="0" data-ronda="{{ ronda_key }}" data-idx="0" data-team="2">
-                        </div>
-                        {% if ko_match.played %}
-                        <div class="ko-winner">✅ {{ ko_match.winner }}</div>
-                        {% endif %}
-                        <button class="btn-tiny" onclick="guardarKOMatch('{{ ronda_key }}', 0)">💾</button>
-                        <button class="btn-tiny" onclick="asignarEquipoKO('{{ ronda_key }}', 0)">👤</button>
-                    </div>
-                </div>
-                {% else %}
-                <div class="ronda-col {{ 'ronda-' + ronda_key }}">
-                    <div class="ronda-header">{{ ronda_info.label }}</div>
-                    {% for ko_match in partidos_ko.matches %}
-                    <div class="match-ko" data-ronda="{{ ronda_key }}" data-idx="{{ loop.index0 }}">
-                        <div class="ko-teams">
-                            <div class="ko-team {% if ko_match.winner and ko_match.winner == ko_match.team1 %}winner{% endif %}" data-ronda="{{ ronda_key }}" data-idx="{{ loop.index0 }}" data-slot="team1">
-                                {{ ko_match.team1 or '—' }}
-                            </div>
-                            <div class="ko-vs">vs</div>
-                            <div class="ko-team {% if ko_match.winner and ko_match.winner == ko_match.team2 %}winner{% endif %}" data-ronda="{{ ronda_key }}" data-idx="{{ loop.index0 }}" data-slot="team2">
-                                {{ ko_match.team2 or '—' }}
-                            </div>
-                        </div>
-                        <div class="ko-score">
-                            <input type="number" class="ko-input" id="score-{{ ronda_key }}-{{ loop.index0 }}-1" value="{{ ko_match.score1 or '' }}" min="0" placeholder="0" data-ronda="{{ ronda_key }}" data-idx="{{ loop.index0 }}" data-team="1">
-                            <span>-</span>
-                            <input type="number" class="ko-input" id="score-{{ ronda_key }}-{{ loop.index0 }}-2" value="{{ ko_match.score2 or '' }}" min="0" placeholder="0" data-ronda="{{ ronda_key }}" data-idx="{{ loop.index0 }}" data-team="2">
-                        </div>
-                        <div class="ko-penales"{% if ko_match.penalties1 is none %} style="display:none"{% endif %}>
-                            Pen: <input type="number" class="pen-input" id="pen-{{ ronda_key }}-{{ loop.index0 }}-1" value="{{ ko_match.penalties1 if ko_match.penalties1 is not none else '' }}" min="0" placeholder="-" data-ronda="{{ ronda_key }}" data-idx="{{ loop.index0 }}" data-team="1">
-                            - <input type="number" class="pen-input" id="pen-{{ ronda_key }}-{{ loop.index0 }}-2" value="{{ ko_match.penalties2 if ko_match.penalties2 is not none else '' }}" min="0" placeholder="-" data-ronda="{{ ronda_key }}" data-idx="{{ loop.index0 }}" data-team="2">
-                        </div>
-                        {% if ko_match.played %}
-                        <div class="ko-winner">✅ {{ ko_match.winner }}</div>
-                        {% endif %}
-                        <div class="ko-actions">
-                            <button class="btn-tiny" onclick="guardarKOMatch('{{ ronda_key }}', {{ loop.index0 }})">💾</button>
-                            <button class="btn-tiny" onclick="togglePenales('{{ ronda_key }}', {{ loop.index0 }})">⚽ Pen</button>
-                            <button class="btn-tiny" onclick="asignarEquipoKO('{{ ronda_key }}', {{ loop.index0 }})">👤</button>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-                {% endif %}
-                {% endfor %}
-            </div>
-        </div>
-    </div>
-    {% endif %}
+    <div id="bracket-root"></div>
 </div>
 
 <script>
-function togglePenales(ronda, idx) {
-    const container = document.querySelector(`.match-ko[data-ronda="${ronda}"][data-idx="${idx}"] .ko-penales`);
-    if (!container) return;
-    container.style.display = container.style.display === 'none' ? 'block' : 'none';
-}
-
-function asignarEquipoKO(ronda, idx) {
-    const equiposJson = {{ clasificados.total|tojson|safe }};
-    const equipos = equiposJson.map(e => e.team);
-    let equiposStr = equipos.map((e, i) => `${i + 1}. ${e}`).join('\n');
-    const sel = prompt(`Selecciona equipo para este partido (escribe el nombre):\n\nDisponibles:\n${equiposStr}`);
-    if (!sel) return;
-
-    let equipo = null;
-    for (const e of equipos) {
-        if (e.toLowerCase().includes(sel.toLowerCase())) {
-            equipo = e;
-            break;
-        }
-    }
-    if (!equipo) {
-        alert('Equipo no encontrado. Intenta de nuevo.');
-        return;
-    }
-
-    const slot = prompt('¿Qué posición? (team1 o team2)');
-    if (!slot || !['team1', 'team2'].includes(slot)) return;
-
-    fetch('/api/eliminatorias/asignar', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ronda, idx, slot, team: equipo})
-    }).then(r => r.json()).then(d => {
-        if (d.success) location.reload();
-        else alert('Error: ' + d.error);
-    });
-}
+window._clasificadosData = {{ clasificados.total|tojson|safe }};
 </script>
 {% endblock %}

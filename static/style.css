@@ -362,6 +362,217 @@ h3 { font-size: 1.1rem; margin-bottom: 0.75rem; color: var(--text-muted); }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
+/* ── Bracket Visual ─────────────────────────────────────────── */
+:root {
+    --bkt-h: 800px;
+    --bkt-cw: 18px;
+    --bkt-line: #3a3a5c;
+}
+
+.bkt-wrapper {
+    display: flex;
+    align-items: flex-start;
+    overflow-x: auto;
+    padding: 1.5rem 0.5rem;
+    gap: 0;
+}
+
+.bkt-half-l, .bkt-half-r {
+    display: flex;
+    align-items: stretch;
+    gap: calc(var(--bkt-cw) * 2 + 4px);
+}
+
+.bkt-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 0 0.75rem;
+    min-width: 196px;
+    flex-shrink: 0;
+}
+
+.bkt-center-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    text-align: center;
+    margin-bottom: 0.2rem;
+}
+
+.bkt-col {
+    display: flex;
+    flex-direction: column;
+    height: var(--bkt-h);
+    overflow: visible;
+    flex-shrink: 0;
+}
+
+.bkt-col-label {
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    text-align: center;
+    padding-bottom: 0.3rem;
+    flex-shrink: 0;
+}
+
+.bkt-pair {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    position: relative;
+    overflow: visible;
+}
+
+.bkt-match-wrap {
+    position: relative;
+    overflow: visible;
+}
+
+/* Left half: connectors go RIGHT toward center */
+.bkt-half-l .bkt-pair::after {
+    content: '';
+    position: absolute;
+    right: calc(-1 * var(--bkt-cw));
+    top: 25%;
+    height: 50%;
+    width: 1px;
+    background: var(--bkt-line);
+    z-index: 1;
+}
+
+.bkt-half-l .bkt-match-wrap::after {
+    content: '';
+    position: absolute;
+    right: calc(-1 * var(--bkt-cw));
+    top: 50%;
+    transform: translateY(-50%);
+    width: var(--bkt-cw);
+    height: 1px;
+    background: var(--bkt-line);
+    z-index: 1;
+}
+
+/* Right half: connectors go LEFT toward center */
+.bkt-half-r .bkt-pair::after {
+    content: '';
+    position: absolute;
+    left: calc(-1 * var(--bkt-cw));
+    top: 25%;
+    height: 50%;
+    width: 1px;
+    background: var(--bkt-line);
+    z-index: 1;
+}
+
+.bkt-half-r .bkt-match-wrap::after {
+    content: '';
+    position: absolute;
+    left: calc(-1 * var(--bkt-cw));
+    top: 50%;
+    transform: translateY(-50%);
+    width: var(--bkt-cw);
+    height: 1px;
+    background: var(--bkt-line);
+    z-index: 1;
+}
+
+/* Single-match columns (SF): no vertical connector, keep horizontal arm */
+.bkt-col-single .bkt-pair::after { display: none; }
+
+/* Match card */
+.bkt-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 0.35rem 0.45rem;
+    width: 160px;
+    font-size: 0.79rem;
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+
+.bkt-card.bkt-played { border-left: 3px solid #2ecc71; }
+
+.bkt-card.bkt-final {
+    width: 182px;
+    padding: 0.5rem 0.65rem;
+    border-color: #f39c12;
+}
+
+.bkt-card.bkt-third {
+    width: 182px;
+    padding: 0.5rem 0.65rem;
+}
+
+.bkt-team {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.2rem;
+    padding: 0.1rem 0;
+}
+
+.bkt-name {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 82px;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+}
+
+.bkt-name.assigned { color: var(--text); }
+.bkt-name.winner { color: #2ecc71; font-weight: 700; }
+
+.bkt-score {
+    width: 30px;
+    padding: 0.06rem 0.15rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text);
+    font-size: 0.77rem;
+    text-align: center;
+}
+
+.bkt-score:focus { outline: none; border-color: var(--accent); }
+.bkt-sep { color: var(--text-muted); font-size: 0.7rem; padding: 0 1px; }
+
+.bkt-penales {
+    display: none;
+    align-items: center;
+    gap: 0.15rem;
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    margin-top: 0.12rem;
+}
+
+.bkt-pen {
+    width: 26px;
+    padding: 0.04rem 0.12rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text);
+    font-size: 0.68rem;
+    text-align: center;
+}
+
+.bkt-actions {
+    display: flex;
+    gap: 0.15rem;
+    margin-top: 0.2rem;
+    justify-content: flex-end;
+}
+
 @media (max-width: 768px) {
     .grupos-grid { grid-template-columns: 1fr; }
     .partido-row { grid-template-columns: 1fr; gap: 0.5rem; }
