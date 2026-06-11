@@ -138,12 +138,12 @@ h3 { font-size: 1.1rem; margin-bottom: 0.75rem; color: var(--text-muted); }
 .grupo-header:hover { background: var(--border); }
 
 /* Tables */
-.tabla-mini { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
-.tabla-mini th, .tabla-mini td { padding: 0.35rem 0.25rem; text-align: left; }
-.tabla-mini th { color: var(--text-muted); font-weight: 500; font-size: 0.7rem; text-transform: uppercase; }
-.tabla-mini td:first-child { width: 16px; padding-right: 0.1rem; }
-.tabla-mini td:nth-child(2) { min-width: 90px; }
-.tabla-mini td:nth-child(n+3) { text-align: center; width: 20px; padding-left: 0.15rem; padding-right: 0.15rem; }
+.tabla-mini { width: 100%; border-collapse: collapse; font-size: 0.78rem; table-layout: fixed; }
+.tabla-mini th, .tabla-mini td { padding: 0.3rem 0.15rem; text-align: left; white-space: nowrap; overflow: hidden; }
+.tabla-mini th { color: var(--text-muted); font-weight: 500; font-size: 0.68rem; text-transform: uppercase; }
+.tabla-mini td:first-child, .tabla-mini th:first-child { width: 16px; }
+.tabla-mini td:nth-child(2), .tabla-mini th:nth-child(2) { width: auto; text-overflow: ellipsis; }
+.tabla-mini td:nth-child(n+3), .tabla-mini th:nth-child(n+3) { width: 22px; text-align: center; padding-left: 0.1rem; padding-right: 0.1rem; }
 
 .tabla-grupo { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
 .tabla-grupo th, .tabla-grupo td { padding: 0.5rem 0.6rem; text-align: left; }
