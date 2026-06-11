@@ -69,6 +69,10 @@ def build_exe(onefile=False):
     else:
         cmd.append("--onedir")
 
+    icon_path = os.path.join("static", "icon.ico")
+    if os.path.exists(icon_path):
+        cmd.extend(["--icon", icon_path])
+
     for src, dst in DATA_DIRS:
         sep = ";" if platform.system() == "Windows" else ":"
         cmd.extend(["--add-data", f"{src}{sep}{dst}"])
