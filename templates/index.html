@@ -37,7 +37,7 @@
                         {% for eq in tabla_grupo %}
                         <tr class="{% if eq.pos <= 2 %}clasificado{% elif eq.pos == 3 and eq.team in mejores_terceros %}tercero-opcion{% endif %}">
                             <td>{{ eq.pos }}</td>
-                            <td class="td-team">{{ eq.team }}</td>
+                            <td class="td-team">{{ eq.team | flag }}</td>
                             <td>{{ eq.pj }}</td>
                             <td>{{ eq.gc }}</td>
                             <td>{{ eq.gd }}</td>
@@ -58,11 +58,11 @@
             {% for p in ultimos_partidos %}
             <div class="resultado-item">
                 <span class="resultado-grupo">Grupo {{ p.group }}</span>
-                <span class="resultado-equipo">{{ p.team1 }}</span>
+                <span class="resultado-equipo">{{ p.team1 | flag }}</span>
                 <span class="resultado-marcador">
                     <strong>{{ p.fulltime1 }} - {{ p.fulltime2 }}</strong>
                 </span>
-                <span class="resultado-equipo">{{ p.team2 }}</span>
+                <span class="resultado-equipo">{{ p.team2 | flag }}</span>
             </div>
             {% endfor %}
         </div>

@@ -26,7 +26,7 @@
                     {% for eq in tabla_grupo %}
                     <tr class="{% if eq.pos <= 2 %}clasificado-row{% elif eq.pos == 3 %}tercero-row{% endif %}">
                         <td>{{ eq.pos }}</td>
-                        <td class="team-name">{{ eq.team }}</td>
+                        <td class="team-name">{{ eq.team | flag }}</td>
                         <td>{{ eq.pj }}</td>
                         <td>{{ eq.pg }}</td>
                         <td>{{ eq.pe }}</td>

@@ -30,7 +30,7 @@
         <div class="partido-row" data-grupo="{{ p.group }}" data-jugado="{{ p.played|lower }}" data-date="{{ p.date }}" data-time="{{ p.time }}">
             <div class="partido-grupo">Grupo {{ p.group }}</div>
             <div class="partido-equipos">
-                <span class="partido-equipo">{{ p.team1 }}</span>
+                <span class="partido-equipo">{{ p.team1 | flag }}</span>
                 <span class="partido-marcador" onclick="activarEdicionMarcador({{ p.id }})">
                     {% if p.played %}
                     <strong>{{ p.fulltime1 }} - {{ p.fulltime2 }}</strong>
@@ -39,7 +39,7 @@
                     <em>vs ✏️</em>
                     {% endif %}
                 </span>
-                <span class="partido-equipo">{{ p.team2 }}</span>
+                <span class="partido-equipo">{{ p.team2 | flag }}</span>
             </div>
             <div class="partido-info">
                 {% if p.date %}{{ p.date }}{% endif %}

@@ -5,6 +5,21 @@ from datetime import datetime
 
 DATA_FILE = os.path.join(os.path.dirname(__file__), "data", "mundial.json")
 
+BANDERAS = {
+    "México": "mx", "Sudáfrica": "za", "Corea del Sur": "kr", "República Checa": "cz",
+    "Canadá": "ca", "Suiza": "ch", "Catar": "qa", "Bosnia y Herzegovina": "ba",
+    "Brasil": "br", "Marruecos": "ma", "Haití": "ht", "Escocia": "gb-sct",
+    "EE. UU.": "us", "Paraguay": "py", "Australia": "au", "Turquía": "tr",
+    "Alemania": "de", "Ecuador": "ec", "Costa de Marfil": "ci", "Curazao": "cw",
+    "Países Bajos": "nl", "Japón": "jp", "Túnez": "tn", "Suecia": "se",
+    "Bélgica": "be", "Irán": "ir", "Egipto": "eg", "Nueva Zelanda": "nz",
+    "España": "es", "Uruguay": "uy", "Arabia Saudita": "sa", "Cabo Verde": "cv",
+    "Francia": "fr", "Senegal": "sn", "Noruega": "no", "Irak": "iq",
+    "Argentina": "ar", "Argelia": "dz", "Austria": "at", "Jordania": "jo",
+    "Portugal": "pt", "Colombia": "co", "Uzbekistán": "uz", "RD Congo": "cd",
+    "Inglaterra": "gb-eng", "Croacia": "hr", "Ghana": "gh", "Panamá": "pa",
+}
+
 GRUPOS_2026 = {
     "A": ["México", "Sudáfrica", "Corea del Sur", "República Checa"],
     "B": ["Canadá", "Suiza", "Catar", "Bosnia y Herzegovina"],

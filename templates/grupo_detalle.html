@@ -26,7 +26,7 @@
                     {% for eq in tabla %}
                     <tr class="{% if eq.pos <= 2 %}clasificado-row{% endif %}">
                         <td>{{ eq.pos }}</td>
-                        <td class="team-name">{{ eq.team }}</td>
+                        <td class="team-name">{{ eq.team | flag }}</td>
                         <td>{{ eq.pj }}</td>
                         <td>{{ eq.pg }}</td>
                         <td>{{ eq.pe }}</td>
@@ -51,7 +51,7 @@
                 {% for p in partidos %}
                 <div class="match-card {% if p.played %}played{% endif %}" data-id="{{ p.id }}" data-date="{{ p.date }}" data-time="{{ p.time }}" data-jugado="{{ p.played|lower }}">
                     <div class="match-teams">
-                        <span class="match-team">{{ p.team1 }}</span>
+                        <span class="match-team">{{ p.team1 | flag }}</span>
                         <span class="match-score" onclick="activarEdicionMarcadorGD({{ p.id }})">
                             {% if p.played %}
                             <strong>{{ p.fulltime1 }} - {{ p.fulltime2 }}</strong>
@@ -59,7 +59,7 @@
                             <em>vs ✏️</em>
                             {% endif %}
                         </span>
-                        <span class="match-team">{{ p.team2 }}</span>
+                        <span class="match-team">{{ p.team2 | flag }}</span>
                     </div>
                     <div class="match-meta">
                         {% if p.date %}{{ p.date }}{% endif %}

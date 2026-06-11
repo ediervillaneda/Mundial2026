@@ -2,18 +2,31 @@ import os
 import sys
 import webbrowser
 from threading import Timer
+from markupsafe import Markup
 from flask import Flask, render_template, request, jsonify, redirect, url_for
 from data_manager import (
     MundialData,
     RUTA_ELIMINATORIA,
     IDX_RONDA,
     GRUPOS_2026,
+    BANDERAS,
 )
 
 app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
 data_mgr = MundialData()
+
+
+@app.template_filter("flag")
+def flag_filter(nombre):
+    code = BANDERAS.get(nombre, "")
+    if not code:
+        return nombre
+    return Markup(
+        f'<img src="https://flagcdn.com/w20/{code}.png" width="20" height="15" '
+        f'alt="{nombre}" style="border-radius:2px;vertical-align:middle;margin-right:4px;">{nombre}'
+    )
 
 
 @app.route("/")

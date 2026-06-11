@@ -191,6 +191,27 @@ async function guardarKOMatch(ronda, idx) {
 
 // ── Bracket Visual ────────────────────────────────────────────
 
+const BANDERAS_JS = {
+    "México":"mx","Sudáfrica":"za","Corea del Sur":"kr","República Checa":"cz",
+    "Canadá":"ca","Suiza":"ch","Catar":"qa","Bosnia y Herzegovina":"ba",
+    "Brasil":"br","Marruecos":"ma","Haití":"ht","Escocia":"gb-sct",
+    "EE. UU.":"us","Paraguay":"py","Australia":"au","Turquía":"tr",
+    "Alemania":"de","Ecuador":"ec","Costa de Marfil":"ci","Curazao":"cw",
+    "Países Bajos":"nl","Japón":"jp","Túnez":"tn","Suecia":"se",
+    "Bélgica":"be","Irán":"ir","Egipto":"eg","Nueva Zelanda":"nz",
+    "España":"es","Uruguay":"uy","Arabia Saudita":"sa","Cabo Verde":"cv",
+    "Francia":"fr","Senegal":"sn","Noruega":"no","Irak":"iq",
+    "Argentina":"ar","Argelia":"dz","Austria":"at","Jordania":"jo",
+    "Portugal":"pt","Colombia":"co","Uzbekistán":"uz","RD Congo":"cd",
+    "Inglaterra":"gb-eng","Croacia":"hr","Ghana":"gh","Panamá":"pa",
+};
+
+function flagImg(nombre) {
+    const code = BANDERAS_JS[nombre];
+    if (!code) return nombre;
+    return `<img src="https://flagcdn.com/w20/${code}.png" width="20" height="15" alt="${nombre}" style="border-radius:2px;vertical-align:middle;margin-right:4px;">${nombre}`;
+}
+
 function renderMatch(match, ronda, idx) {
     const t1 = match.team1 || '—';
     const t2 = match.team2 || '—';
@@ -209,12 +230,12 @@ function renderMatch(match, ronda, idx) {
 
     return `<div class="bkt-card ${match.played ? 'bkt-played' : ''} ${cardExtra}">
         <div class="bkt-team">
-            <span class="${n1}">${t1}</span>
+            <span class="${n1}">${flagImg(t1)}</span>
             <input type="number" class="bkt-score" id="score-${ronda}-${idx}-1" value="${s1}" min="0" placeholder="0" ${dis}>
             <span class="bkt-sep">-</span>
             <input type="number" class="bkt-score" id="score-${ronda}-${idx}-2" value="${s2}" min="0" placeholder="0" ${dis}>
         </div>
-        <div class="bkt-team"><span class="${n2}">${t2}</span></div>
+        <div class="bkt-team"><span class="${n2}">${flagImg(t2)}</span></div>
         <div class="bkt-penales" id="bkt-pen-${ronda}-${idx}" style="display:${penDisplay}">
             Pen:
             <input type="number" class="bkt-pen" id="pen-${ronda}-${idx}-1" value="${p1}" min="0" placeholder="-" ${dis}>
