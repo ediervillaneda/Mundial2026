@@ -78,12 +78,6 @@ def partidos():
     )
 
 
-@app.route("/api/partido/agregar", methods=["POST"])
-def api_agregar_partido():
-    datos = request.json
-    data_mgr.agregar_partido(datos)
-    return jsonify({"success": True})
-
 
 @app.route("/api/partido/<int:match_id>", methods=["GET"])
 def api_get_partido(match_id):

@@ -3,7 +3,6 @@
 <div class="partidos-page">
     <div class="page-header">
         <h1>Partidos</h1>
-        <button class="btn" onclick="mostrarFormAgregar()">+ Agregar Partido</button>
     </div>
 
     <div class="filtros">
@@ -28,7 +27,7 @@
     <div id="modal-partido" class="modal" style="display:none">
         <div class="modal-content">
             <span class="modal-close" onclick="cerrarModal()">&times;</span>
-            <h2 id="modal-title">Agregar/Editar Partido</h2>
+            <h2 id="modal-title">Editar Partido</h2>
             <input type="hidden" id="match-id" value="">
             <div class="form-grid">
                 <div class="form-group">
@@ -52,25 +51,7 @@
                         <option value="">Seleccionar</option>
                     </select>
                 </div>
-                <div id="score-fields">
-                    <div class="form-group">
-                        <label>Marcador 1er T (Local)</label>
-                        <input type="number" id="f-ht1" min="0" placeholder="-">
-                    </div>
-                    <div class="form-group">
-                        <label>Marcador 1er T (Visitante)</label>
-                        <input type="number" id="f-ht2" min="0" placeholder="-">
-                    </div>
-                    <div class="form-group">
-                        <label>Marcador Final (Local)</label>
-                        <input type="number" id="f-ft1" min="0">
-                    </div>
-                    <div class="form-group">
-                        <label>Marcador Final (Visitante)</label>
-                        <input type="number" id="f-ft2" min="0">
-                    </div>
-                </div>
-                <div id="edit-score-msg" class="edit-score-msg" style="display:none">
+                <div class="edit-score-msg">
                     ⚽ Edita el marcador directamente en la lista de partidos (clic en el resultado)
                 </div>
             </div>

@@ -23,20 +23,6 @@ function filtrarPartidos() {
     });
 }
 
-function mostrarFormAgregar() {
-    document.getElementById('modal-title').textContent = 'Agregar Partido';
-    document.getElementById('match-id').value = '';
-    document.getElementById('f-grupo').value = '';
-    document.getElementById('f-team1').innerHTML = '<option value="">Seleccionar</option>';
-    document.getElementById('f-team2').innerHTML = '<option value="">Seleccionar</option>';
-    document.getElementById('f-ht1').value = '';
-    document.getElementById('f-ht2').value = '';
-    document.getElementById('f-ft1').value = '';
-    document.getElementById('f-ft2').value = '';
-    document.getElementById('score-fields').style.display = '';
-    document.getElementById('edit-score-msg').style.display = 'none';
-    document.getElementById('modal-partido').style.display = 'flex';
-}
 
 function cerrarModal() {
     document.getElementById('modal-partido').style.display = 'none';
@@ -64,8 +50,6 @@ async function editarPartido(id) {
 
     t1.value = data.team1;
     t2.value = data.team2;
-    document.getElementById('score-fields').style.display = 'none';
-    document.getElementById('edit-score-msg').style.display = 'block';
     document.getElementById('modal-partido').style.display = 'flex';
 }
 
@@ -77,19 +61,7 @@ async function guardarPartido() {
         team2: document.getElementById('f-team2').value,
     };
 
-    if (!id) {
-        datos.halftime1 = parseNullable(document.getElementById('f-ht1').value);
-        datos.halftime2 = parseNullable(document.getElementById('f-ht2').value);
-        datos.fulltime1 = parseNullable(document.getElementById('f-ft1').value);
-        datos.fulltime2 = parseNullable(document.getElementById('f-ft2').value);
-    }
-
-    let url;
-    if (id) {
-        url = `/api/partido/${id}/actualizar`;
-    } else {
-        url = '/api/partido/agregar';
-    }
+    const url = `/api/partido/${id}/actualizar`;
 
     const result = await fetchJSON(url, {
         method: 'POST',
