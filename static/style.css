@@ -145,12 +145,15 @@ h3 { font-size: 1.1rem; margin-bottom: 0.75rem; color: var(--text-muted); }
 .tabla-mini td:nth-child(2), .tabla-mini th:nth-child(2) { width: auto; text-overflow: ellipsis; }
 .tabla-mini td:nth-child(n+3), .tabla-mini th:nth-child(n+3) { width: 22px; text-align: center; padding-left: 0.1rem; padding-right: 0.1rem; }
 
-.tabla-grupo { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-.tabla-grupo th, .tabla-grupo td { padding: 0.5rem 0.6rem; text-align: left; }
-.tabla-grupo th { color: var(--text-muted); font-weight: 500; font-size: 0.75rem; text-transform: uppercase; border-bottom: 1px solid var(--border); }
+.tabla-grupo { width: 100%; border-collapse: collapse; font-size: 0.8rem; table-layout: fixed; }
+.tabla-grupo th, .tabla-grupo td { padding: 0.4rem 0.15rem; text-align: left; white-space: nowrap; overflow: hidden; }
+.tabla-grupo th { color: var(--text-muted); font-weight: 500; font-size: 0.7rem; text-transform: uppercase; border-bottom: 1px solid var(--border); }
 .tabla-grupo td { border-bottom: 1px solid rgba(255,255,255,0.03); }
+.tabla-grupo td:first-child, .tabla-grupo th:first-child { width: 16px; padding-left: 0.5rem; }
+.tabla-grupo td:nth-child(2), .tabla-grupo th:nth-child(2) { text-overflow: ellipsis; padding-left: 0.3rem; }
+.tabla-grupo td:nth-child(n+3), .tabla-grupo th:nth-child(n+3) { width: 26px; text-align: center; padding-left: 0.1rem; padding-right: 0.1rem; }
 .tabla-grupo .team-name { font-weight: 600; }
-.tabla-grupo .pts { font-weight: 700; color: var(--accent2); text-align: center; }
+.tabla-grupo .pts { font-weight: 700; color: var(--accent2); }
 .tabla-grupo tr:hover { background: var(--hover); }
 
 .clasificado td:first-child { color: var(--green); font-weight: 700; }
