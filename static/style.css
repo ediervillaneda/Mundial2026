@@ -115,7 +115,7 @@ h3 { font-size: 1.1rem; margin-bottom: 0.75rem; color: var(--text-muted); }
 /* Group cards */
 .grupos-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 1.25rem;
 }
 .grupo-card {
