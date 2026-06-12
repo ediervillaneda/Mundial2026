@@ -1,0 +1,383 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="est-page">
+    <div class="page-header">
+        <h1>Estadísticas</h1>
+        <button class="btn" onclick="abrirModalCarga()">+ Cargar stats de partido</button>
+    </div>
+
+    <!-- Summary -->
+    <div class="stats-grid" style="margin-bottom:2.5rem">
+        <div class="stat-card">
+            <div class="stat-number">{{ stats.total_goles }}</div>
+            <div class="stat-label">Goles Totales</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ stats.partidos_jugados }}</div>
+            <div class="stat-label">Partidos Jugados</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ stats.promedio_goles }}</div>
+            <div class="stat-label">Goles por Partido</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ stats.top_goleadores|length }}</div>
+            <div class="stat-label">Goleadores</div>
+        </div>
+    </div>
+
+    <div class="est-grid">
+        <!-- Goleadores -->
+        <div class="est-card est-full">
+            <h2>Tabla de Goleadores</h2>
+            {% if stats.top_goleadores %}
+            <table class="est-table">
+                <thead>
+                    <tr><th>#</th><th>Jugador</th><th>Equipo</th><th>Goles</th><th>Minutos</th></tr>
+                </thead>
+                <tbody>
+                    {% for g in stats.top_goleadores %}
+                    <tr>
+                        <td class="est-pos">{{ loop.index }}</td>
+                        <td class="est-nombre">{{ g.autor }}</td>
+                        <td>{{ g.equipo | flag }}</td>
+                        <td class="est-goles">
+                            <span class="goles-badge">{{ g.goles }}</span>
+                        </td>
+                        <td class="est-minutos">
+                            {% for d in g.detalles %}<span class="minuto-chip">{{ d.minuto }}'</span>{% endfor %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="empty">Sin goles registrados. Carga estadísticas de partido para ver goleadores.</p>
+            {% endif %}
+        </div>
+
+        <!-- Top ataque -->
+        <div class="est-card">
+            <h2>Mejor Ataque</h2>
+            {% if stats.top_ataque %}
+            <div class="rank-list">
+                {% for eq in stats.top_ataque %}
+                <div class="rank-row">
+                    <span class="rank-num">{{ loop.index }}</span>
+                    <span class="rank-name">{{ eq.team | flag }}</span>
+                    <span class="rank-val rank-val-green">{{ eq.gf }} <small>GF</small></span>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="empty">Sin datos aún.</p>
+            {% endif %}
+        </div>
+
+        <!-- Top defensa -->
+        <div class="est-card">
+            <h2>Mejor Defensa</h2>
+            {% if stats.top_defensa %}
+            <div class="rank-list">
+                {% for eq in stats.top_defensa %}
+                <div class="rank-row">
+                    <span class="rank-num">{{ loop.index }}</span>
+                    <span class="rank-name">{{ eq.team | flag }}</span>
+                    <span class="rank-val rank-val-blue">{{ eq.gc }} <small>GC</small></span>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="empty">Sin datos aún.</p>
+            {% endif %}
+        </div>
+
+        <!-- Partidos más goleadores -->
+        <div class="est-card est-full">
+            <h2>Partidos más Goleadores</h2>
+            {% if stats.mejores_partidos %}
+            <div class="mejores-list">
+                {% for p in stats.mejores_partidos %}
+                <div class="mejor-row">
+                    <span class="mejor-grupo">{{ p.group }}</span>
+                    <span class="mejor-team">{{ p.team1 | flag }}</span>
+                    <span class="mejor-score">{{ p.fulltime1 }} – {{ p.fulltime2 }}</span>
+                    <span class="mejor-team mejor-team-r">{{ p.team2 | flag_r }}</span>
+                    <span class="mejor-total">{{ p.fulltime1 + p.fulltime2 }} goles</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="empty">Sin partidos jugados aún.</p>
+            {% endif %}
+        </div>
+
+        <!-- Estadísticas detalladas por partido -->
+        <div class="est-card est-full">
+            <h2>Estadísticas Detalladas por Partido</h2>
+            {% if stats.partidos_con_stats %}
+            <div class="det-list">
+                {% for p in stats.partidos_con_stats %}
+                <div class="det-partido" id="det-{{ p.id }}">
+                    <div class="det-header" onclick="toggleDet({{ p.id }})">
+                        <span class="det-grupo">{{ p.group }}</span>
+                        <span class="det-teams">{{ p.team1 | flag }} <strong>{{ p.fulltime1 }} – {{ p.fulltime2 }}</strong> {{ p.team2 | flag_r }}</span>
+                        <span class="det-date">{% if p.date %}{{ p.date.split('-')[2] }}/{{ p.date.split('-')[1] }}{% endif %}</span>
+                        <span class="det-chevron" id="chev-{{ p.id }}">▼</span>
+                    </div>
+                    <div class="det-body" id="body-{{ p.id }}" style="display:none">
+                        {% if p.goles %}
+                        <div class="det-section">
+                            <div class="det-section-title">Goles</div>
+                            <div class="goles-timeline">
+                                {% for g in p.goles | sort(attribute='minuto') %}
+                                <div class="gol-item {% if g.equipo == p.team1 %}gol-left{% else %}gol-right{% endif %}">
+                                    <span class="gol-min">{{ g.minuto }}'</span>
+                                    <span class="gol-icon">⚽</span>
+                                    <span class="gol-autor">{{ g.autor }}</span>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if p.estadisticas_colectivas %}
+                        <div class="det-section">
+                            <div class="det-section-title">Estadísticas del Partido</div>
+                            <div class="colectivas-header">
+                                <span>{{ p.team1 | flag }}</span>
+                                <span></span>
+                                <span style="text-align:right">{{ p.team2 | flag_r }}</span>
+                            </div>
+                            {% set ec = p.estadisticas_colectivas %}
+                            {% set keys1 = ec.keys() | list %}
+
+                            {% for stat_key in keys1 %}
+                            {% set stat = ec[stat_key] %}
+                            {% set vals = stat.values() | list %}
+                            {% set label = stat_key.replace('_', ' ').title() %}
+                            <div class="col-stat-row">
+                                {% if vals | length == 2 %}
+                                {% set v1 = vals[0] %}
+                                {% set v2 = vals[1] %}
+                                <span class="col-val">
+                                    {% if v1 is mapping %}
+                                        {% for k, v in v1.items() %}{{ v }} {{ k }}{% if not loop.last %}, {% endif %}{% endfor %}
+                                    {% else %}{{ v1 }}{% endif %}
+                                </span>
+                                <span class="col-label">{{ label }}</span>
+                                <span class="col-val col-val-r">
+                                    {% if v2 is mapping %}
+                                        {% for k, v in v2.items() %}{{ v }} {{ k }}{% if not loop.last %}, {% endif %}{% endfor %}
+                                    {% else %}{{ v2 }}{% endif %}
+                                </span>
+                                {% if stat_key == 'posicion_balon' %}
+                                <div class="col-bar-wrap" style="grid-column:1/-1">
+                                    <div class="col-bar">
+                                        <div class="col-bar-fill" style="width:{{ v1 }}; background:var(--accent)"></div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="empty">Sin estadísticas cargadas. Usa el botón "+ Cargar stats de partido".</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Modal carga de stats -->
+<div id="modal-stats" class="modal" style="display:none">
+    <div class="modal-content" style="max-width:680px">
+        <span class="modal-close" onclick="cerrarModalCarga()">×</span>
+        <h2 style="margin-bottom:1.25rem">Cargar Estadísticas de Partido</h2>
+
+        <div class="form-group" style="margin-bottom:1rem">
+            <label>Partido</label>
+            <select id="sel-partido" style="background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:0.5rem 0.75rem;border-radius:6px;font-family:Outfit,sans-serif;font-size:0.875rem;width:100%">
+                <option value="">-- Selecciona un partido --</option>
+                {% for p in todos_partidos %}
+                {% if p.played %}
+                <option value="{{ p.id }}">{{ p.group }} · {{ p.team1 }} {{ p.fulltime1 }}–{{ p.fulltime2 }} {{ p.team2 }}</option>
+                {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom:1rem">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.3rem">
+                <label style="margin:0">JSON de estadísticas</label>
+                <button class="btn-tiny" onclick="cargarEjemplo()" title="Insertar JSON de ejemplo">Ver ejemplo</button>
+            </div>
+            <textarea id="stats-json" rows="14" placeholder='{
+  "goles": [
+    {"minuto": 9, "equipo": "México", "autor": "Julián Quiñones"}
+  ],
+  "estadisticas_colectivas": {
+    "posicion_balon": {"mexico": "61%", "sudafrica": "39%"},
+    "remates_totales": {"mexico": 16, "sudafrica": 4}
+  }
+}' style="width:100%;background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:0.75rem;border-radius:6px;font-family:monospace;font-size:0.8rem;resize:vertical"></textarea>
+        </div>
+
+        <div id="stats-msg" style="display:none;margin-bottom:0.75rem"></div>
+        <div class="form-actions">
+            <button class="btn btn-secondary" onclick="cerrarModalCarga()">Cancelar</button>
+            <button class="btn" onclick="guardarStats()">Guardar</button>
+        </div>
+    </div>
+</div>
+
+<style>
+.est-page .page-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem; }
+.est-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; }
+.est-full { grid-column:1/-1; }
+.est-card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:1.5rem; }
+
+/* Tables */
+.est-table { width:100%; border-collapse:collapse; font-size:0.875rem; }
+.est-table th { color:var(--text-muted); font-size:0.66rem; text-transform:uppercase; letter-spacing:0.07em; font-weight:600; padding:0.4rem 0.5rem; border-bottom:1px solid var(--border); text-align:left; }
+.est-table td { padding:0.55rem 0.5rem; border-bottom:1px solid rgba(255,255,255,0.03); vertical-align:middle; }
+.est-table tr:hover td { background:var(--hover); }
+.est-pos { color:var(--text-muted); font-size:0.8rem; width:28px; }
+.est-nombre { font-weight:600; }
+.est-goles { width:60px; }
+.goles-badge { display:inline-block; background:var(--accent); color:#050D0A; font-weight:700; font-family:'Syne',sans-serif; font-size:0.9rem; padding:0.15rem 0.55rem; border-radius:20px; }
+.est-minutos { }
+.minuto-chip { display:inline-block; background:rgba(16,210,130,0.1); border:1px solid rgba(16,210,130,0.2); color:var(--accent); font-size:0.68rem; padding:0.1rem 0.35rem; border-radius:10px; margin:0.05rem; }
+
+/* Rank lists */
+.rank-list { display:flex; flex-direction:column; gap:0.4rem; }
+.rank-row { display:flex; align-items:center; gap:0.75rem; padding:0.45rem 0.5rem; border-radius:6px; transition:background 0.15s; }
+.rank-row:hover { background:var(--hover); }
+.rank-num { font-family:'Syne',sans-serif; font-weight:700; font-size:0.8rem; color:var(--text-muted); width:18px; text-align:center; }
+.rank-name { flex:1; font-size:0.875rem; font-weight:500; }
+.rank-val { font-family:'Syne',sans-serif; font-weight:700; font-size:1rem; }
+.rank-val small { font-size:0.6rem; font-family:'Outfit',sans-serif; font-weight:400; color:var(--text-muted); margin-left:2px; }
+.rank-val-green { color:var(--accent); }
+.rank-val-blue { color:var(--blue); }
+
+/* Mejores partidos */
+.mejores-list { display:flex; flex-direction:column; gap:0.4rem; }
+.mejor-row { display:grid; grid-template-columns:38px 1fr 100px 1fr 80px; align-items:center; gap:0.75rem; padding:0.6rem 0.75rem; background:var(--bg2); border-radius:8px; font-size:0.88rem; }
+.mejor-grupo { font-family:'Syne',sans-serif; font-size:0.65rem; font-weight:700; color:var(--accent); background:rgba(16,210,130,0.08); border:1px solid rgba(16,210,130,0.2); padding:0.2rem 0.35rem; border-radius:5px; text-align:center; }
+.mejor-score { text-align:center; font-family:'Syne',sans-serif; font-weight:700; font-size:1rem; }
+.mejor-team-r { text-align:right; }
+.mejor-total { text-align:right; font-size:0.75rem; color:var(--accent2); font-weight:600; }
+
+/* Detailed stats */
+.det-list { display:flex; flex-direction:column; gap:0.5rem; }
+.det-partido { background:var(--bg2); border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+.det-header { display:grid; grid-template-columns:38px 1fr auto 24px; align-items:center; gap:0.75rem; padding:0.75rem 1rem; cursor:pointer; transition:background 0.15s; }
+.det-header:hover { background:var(--hover); }
+.det-grupo { font-family:'Syne',sans-serif; font-size:0.65rem; font-weight:700; color:var(--accent); background:rgba(16,210,130,0.08); border:1px solid rgba(16,210,130,0.2); padding:0.2rem 0.35rem; border-radius:5px; text-align:center; }
+.det-teams { font-size:0.88rem; }
+.det-teams strong { font-family:'Syne',sans-serif; }
+.det-date { font-size:0.75rem; color:var(--text-muted); }
+.det-chevron { color:var(--text-muted); font-size:0.7rem; transition:transform 0.2s; }
+.det-body { padding:1rem 1.25rem; border-top:1px solid var(--border); }
+.det-section { margin-bottom:1.25rem; }
+.det-section:last-child { margin-bottom:0; }
+.det-section-title { font-family:'Syne',sans-serif; font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--accent2); margin-bottom:0.75rem; }
+
+/* Goals timeline */
+.goles-timeline { display:flex; flex-direction:column; gap:0.4rem; }
+.gol-item { display:flex; align-items:center; gap:0.5rem; font-size:0.875rem; }
+.gol-left { flex-direction:row; }
+.gol-right { flex-direction:row-reverse; }
+.gol-min { font-family:'Syne',sans-serif; font-weight:700; font-size:0.8rem; color:var(--accent); width:38px; }
+.gol-right .gol-min { text-align:right; }
+.gol-icon { font-size:0.9rem; }
+.gol-autor { font-weight:500; }
+
+/* Collective stats */
+.colectivas-header { display:grid; grid-template-columns:1fr auto 1fr; gap:0.5rem; align-items:center; font-size:0.8rem; font-weight:600; margin-bottom:0.5rem; padding:0.4rem 0; border-bottom:1px solid var(--border); }
+.col-stat-row { display:grid; grid-template-columns:1fr 140px 1fr; gap:0.5rem; align-items:center; padding:0.4rem 0; border-bottom:1px solid rgba(255,255,255,0.03); font-size:0.84rem; }
+.col-label { text-align:center; font-size:0.7rem; color:var(--text-muted); text-transform:capitalize; }
+.col-val { font-weight:600; color:var(--text); }
+.col-val-r { text-align:right; }
+.col-bar-wrap { padding:0.1rem 0 0.3rem; }
+.col-bar { height:4px; background:rgba(255,255,255,0.07); border-radius:2px; overflow:hidden; }
+.col-bar-fill { height:100%; border-radius:2px; transition:width 0.4s ease; }
+</style>
+
+<script>
+function abrirModalCarga() {
+    document.getElementById('modal-stats').style.display = 'flex';
+    document.getElementById('stats-msg').style.display = 'none';
+}
+function cerrarModalCarga() {
+    document.getElementById('modal-stats').style.display = 'none';
+    document.getElementById('stats-json').value = '';
+    document.getElementById('sel-partido').value = '';
+}
+function toggleDet(id) {
+    const body = document.getElementById('body-' + id);
+    const chev = document.getElementById('chev-' + id);
+    const open = body.style.display !== 'none';
+    body.style.display = open ? 'none' : 'block';
+    chev.style.transform = open ? '' : 'rotate(180deg)';
+}
+async function guardarStats() {
+    const matchId = document.getElementById('sel-partido').value;
+    const raw = document.getElementById('stats-json').value.trim();
+    const msg = document.getElementById('stats-msg');
+    if (!matchId) { showMsg(msg, 'Selecciona un partido.', 'warn'); return; }
+    if (!raw) { showMsg(msg, 'Pega el JSON de estadísticas.', 'warn'); return; }
+    let datos;
+    try { datos = JSON.parse(raw); } catch(e) { showMsg(msg, 'JSON inválido: ' + e.message, 'err'); return; }
+    const res = await fetch(`/api/partido/${matchId}/estadisticas`, {
+        method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(datos)
+    });
+    const json = await res.json();
+    if (json.success) {
+        cerrarModalCarga();
+        location.reload();
+    } else {
+        showMsg(msg, json.error || 'Error al guardar.', 'err');
+    }
+}
+function cargarEjemplo() {
+    const ejemplo = {
+        "goles": [
+            {"minuto": 15, "equipo": "Equipo A", "autor": "Jugador Uno"},
+            {"minuto": 55, "equipo": "Equipo A", "autor": "Jugador Dos"},
+            {"minuto": 78, "equipo": "Equipo B", "autor": "Jugador Tres"}
+        ],
+        "estadisticas_colectivas": {
+            "posicion_balon": {"equipo_a": "58%", "equipo_b": "42%"},
+            "goles_esperados_xg": {"equipo_a": 2.1, "equipo_b": 0.8},
+            "remates_totales": {"equipo_a": 14, "equipo_b": 6},
+            "remates_al_arco": {"equipo_a": 5, "equipo_b": 2},
+            "pases": {
+                "equipo_a": {"completados": 420, "precision": "88%"},
+                "equipo_b": {"completados": 310, "precision": "81%"}
+            },
+            "tiros_de_esquina": {"equipo_a": 5, "equipo_b": 2},
+            "faltas_cometidas": {"equipo_a": 10, "equipo_b": 14},
+            "tarjetas_amarillas": {"equipo_a": 1, "equipo_b": 3},
+            "tarjetas_rojas": {"equipo_a": 0, "equipo_b": 1}
+        }
+    };
+    document.getElementById('stats-json').value = JSON.stringify(ejemplo, null, 2);
+}
+function showMsg(el, text, type) {
+    el.style.display = 'block';
+    el.style.background = type === 'err' ? 'rgba(239,68,68,0.1)' : 'rgba(240,180,41,0.1)';
+    el.style.border = `1px solid ${type === 'err' ? 'rgba(239,68,68,0.3)' : 'rgba(240,180,41,0.3)'}`;
+    el.style.color = type === 'err' ? 'var(--red)' : 'var(--accent2)';
+    el.style.padding = '0.6rem 0.9rem';
+    el.style.borderRadius = '6px';
+    el.style.fontSize = '0.83rem';
+    el.textContent = text;
+}
+</script>
+{% endblock %}

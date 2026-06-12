@@ -511,6 +511,94 @@ class MundialData:
             "eliminatorias_generadas": self.data["knockout_generated"],
         }
 
+    def actualizar_estadisticas_partido(self, match_id, datos):
+        partido = self.get_partido(match_id)
+        if partido:
+            if "goles" in datos:
+                partido["goles"] = datos["goles"]
+            if "estadisticas_colectivas" in datos:
+                partido["estadisticas_colectivas"] = datos["estadisticas_colectivas"]
+            self.guardar()
+            return True
+        return False
+
+    def obtener_estadisticas_pagina(self):
+        partidos_jugados = [m for m in self.data["matches"] if m["played"]]
+
+        equipos = {}
+        for m in partidos_jugados:
+            t1, t2 = m["team1"], m["team2"]
+            g1, g2 = m["fulltime1"], m["fulltime2"]
+            for eq, gf, gc in [(t1, g1, g2), (t2, g2, g1)]:
+                if eq not in equipos:
+                    equipos[eq] = {"gf": 0, "gc": 0, "gd": 0, "pj": 0, "pg": 0, "pe": 0, "pp": 0}
+                equipos[eq]["gf"] += gf
+                equipos[eq]["gc"] += gc
+                equipos[eq]["pj"] += 1
+                if gf > gc:
+                    equipos[eq]["pg"] += 1
+                elif gf == gc:
+                    equipos[eq]["pe"] += 1
+                else:
+                    equipos[eq]["pp"] += 1
+        for eq in equipos:
+            equipos[eq]["gd"] = equipos[eq]["gf"] - equipos[eq]["gc"]
+
+        goleadores = {}
+        for m in self.data["matches"]:
+            for gol in m.get("goles", []):
+                autor = gol["autor"]
+                if autor not in goleadores:
+                    goleadores[autor] = {"goles": 0, "equipo": gol["equipo"], "detalles": []}
+                goleadores[autor]["goles"] += 1
+                goleadores[autor]["detalles"].append({
+                    "minuto": gol["minuto"],
+                    "rival": m["team2"] if gol["equipo"] == m["team1"] else m["team1"],
+                })
+
+        top_goleadores = sorted(
+            [{"autor": k, **v} for k, v in goleadores.items()],
+            key=lambda x: x["goles"],
+            reverse=True,
+        )
+
+        top_ataque = sorted(
+            [{"team": k, **v} for k, v in equipos.items()],
+            key=lambda x: (x["gf"], x["gd"]),
+            reverse=True,
+        )
+        top_defensa = sorted(
+            [{"team": k, **v} for k, v in equipos.items()],
+            key=lambda x: (x["gc"], -x["gd"]),
+        )
+
+        mejores_partidos = sorted(
+            partidos_jugados,
+            key=lambda m: (m["fulltime1"] + m["fulltime2"]),
+            reverse=True,
+        )[:5]
+
+        partidos_con_stats = [
+            m for m in self.data["matches"]
+            if m.get("estadisticas_colectivas") or m.get("goles")
+        ]
+
+        total_goles = sum(
+            (m["fulltime1"] or 0) + (m["fulltime2"] or 0) for m in partidos_jugados
+        )
+
+        return {
+            "equipos": equipos,
+            "top_goleadores": top_goleadores[:20],
+            "top_ataque": top_ataque[:8],
+            "top_defensa": top_defensa[:8],
+            "mejores_partidos": mejores_partidos,
+            "partidos_con_stats": partidos_con_stats,
+            "total_goles": total_goles,
+            "partidos_jugados": len(partidos_jugados),
+            "promedio_goles": round(total_goles / len(partidos_jugados), 2) if partidos_jugados else 0,
+        }
+
     def reiniciar_eliminatorias(self):
         self.data["knockout"] = {
             "round_of_32": {"matches": _generar_matches_vacios(16)},

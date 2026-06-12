@@ -207,6 +207,45 @@ def api_knockout_data():
     })
 
 
+@app.route("/estadisticas")
+def estadisticas_page():
+    stats = data_mgr.obtener_estadisticas_pagina()
+    partidos_jugados = sorted(
+        [m for m in data_mgr.get_todos_partidos() if m["played"]],
+        key=lambda m: (m.get("date", ""), m.get("time", "")),
+    )
+    todos_partidos = sorted(
+        data_mgr.get_todos_partidos(),
+        key=lambda m: (m.get("date", ""), m.get("time", "")),
+    )
+    return render_template(
+        "estadisticas.html",
+        stats=stats,
+        partidos_jugados=partidos_jugados,
+        todos_partidos=todos_partidos,
+    )
+
+
+@app.route("/api/partido/<int:match_id>/estadisticas", methods=["GET"])
+def api_get_estadisticas_partido(match_id):
+    p = data_mgr.get_partido(match_id)
+    if p:
+        return jsonify({
+            "goles": p.get("goles", []),
+            "estadisticas_colectivas": p.get("estadisticas_colectivas", {}),
+        })
+    return jsonify({"error": "No encontrado"}), 404
+
+
+@app.route("/api/partido/<int:match_id>/estadisticas", methods=["POST"])
+def api_guardar_estadisticas_partido(match_id):
+    datos = request.json
+    ok = data_mgr.actualizar_estadisticas_partido(match_id, datos)
+    if ok:
+        return jsonify({"success": True})
+    return jsonify({"error": "No encontrado"}), 404
+
+
 @app.route("/api/estadisticas")
 def api_estadisticas():
     return jsonify(data_mgr.get_estadisticas())
