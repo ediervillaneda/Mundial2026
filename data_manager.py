@@ -13,6 +13,7 @@ def _base_dir():
 
 DATA_FILE = os.path.join(_base_dir(), "data", "mundial.json")
 RESULTS_FILE = os.path.join(_base_dir(), "data", "resultados.json")
+STATS_FILE = os.path.join(_base_dir(), "data", "estadisticas.json")
 
 BANDERAS = {
     "México": "mx", "Sudáfrica": "za", "Corea del Sur": "kr", "República Checa": "cz",
@@ -80,8 +81,9 @@ IDX_RONDA = {
 }
 
 _CAMPOS_CONFIG = ("id", "group", "team1", "team2", "date", "time")
-_CAMPOS_RESULTADO = ("halftime1", "halftime2", "fulltime1", "fulltime2", "played", "goles", "estadisticas_colectivas")
-_DEFAULTS_RESULTADO = {"halftime1": None, "halftime2": None, "fulltime1": None, "fulltime2": None, "played": False}
+_CAMPOS_RESULTADO = ("score1", "score2", "played")
+_CAMPOS_ESTADISTICAS = ("goles", "estadisticas_colectivas")
+_DEFAULTS_RESULTADO = {"score1": None, "score2": None, "played": False}
 
 
 def _crear_knockout_vacio():
@@ -147,10 +149,8 @@ def _generar_partidos_grupos_iniciales():
                         "team2": equipos[j],
                         "date": fecha,
                         "time": hora,
-                        "halftime1": None,
-                        "halftime2": None,
-                        "fulltime1": None,
-                        "fulltime2": None,
+                        "score1": None,
+                        "score2": None,
                         "played": False,
                     }
                 )
