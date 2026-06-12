@@ -202,7 +202,7 @@
 
         <div class="form-group" style="margin-bottom:1rem">
             <label>Partido</label>
-            <select id="sel-partido" style="background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:0.5rem 0.75rem;border-radius:6px;font-family:Outfit,sans-serif;font-size:0.875rem;width:100%">
+            <select id="sel-partido" onchange="onCambiarPartido()" style="background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:0.5rem 0.75rem;border-radius:6px;font-family:Outfit,sans-serif;font-size:0.875rem;width:100%">
                 <option value="">-- Selecciona un partido --</option>
                 {% for p in todos_partidos %}
                 {% if p.played %}
@@ -363,15 +363,18 @@ function parsearEquipos(textoOpcion) {
     return match ? [match[1].trim(), match[2].trim()] : ['Equipo A', 'Equipo B'];
 }
 
-function cargarEjemplo() {
+function onCambiarPartido() {
+    if (document.getElementById('bloque-prompt-ia').style.display !== 'none') {
+        actualizarTextoPrompt();
+    }
+}
+function actualizarTextoPrompt() {
     const sel = document.getElementById('sel-partido');
     const opcion = sel.options[sel.selectedIndex];
     const textoPartido = sel.value ? opcion.text : 'Grupo A · Equipo A 0–0 Equipo B';
-
     const partes = textoPartido.split('·').map(s => s.trim());
     const infoPartido = partes.length > 1 ? partes[1] : textoPartido;
     const [t1, t2] = parsearEquipos(textoPartido);
-
     const prompt = `Tengo un partido de fútbol del Mundial 2026: ${infoPartido}.
 
 Dame las estadísticas del partido en el siguiente JSON exacto.
@@ -402,8 +405,10 @@ IMPORTANTE — usa EXACTAMENTE estos nombres como claves (sin traducir, sin pref
 Si no tienes los datos a mano, búscalos en internet antes de responder (ESPN, FIFA, Sofascore, WhoScored o cualquier fuente confiable del partido).
 
 Responde SOLO con el JSON, sin texto adicional.`;
-
     document.getElementById('texto-prompt-ia').textContent = prompt;
+}
+function cargarEjemplo() {
+    actualizarTextoPrompt();
     document.getElementById('bloque-prompt-ia').style.display = 'block';
 
     const ejemplo = {
