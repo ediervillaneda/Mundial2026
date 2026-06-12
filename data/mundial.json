@@ -83,9 +83,65 @@
       "time": "14:00",
       "halftime1": null,
       "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "fulltime1": 2,
+      "fulltime2": 0,
+      "played": true,
+      "goles": [
+        {
+          "minuto": 9,
+          "equipo": "México",
+          "autor": "Julián Quiñones"
+        },
+        {
+          "minuto": 67,
+          "equipo": "México",
+          "autor": "Raúl Jiménez"
+        }
+      ],
+      "estadisticas_colectivas": {
+        "posicion_balon": {
+          "mexico": "61%",
+          "sudafrica": "39%"
+        },
+        "goles_esperados_xg": {
+          "mexico": 1.41,
+          "sudafrica": 0.07
+        },
+        "remates_totales": {
+          "mexico": 16,
+          "sudafrica": 4
+        },
+        "remates_al_arco": {
+          "mexico": 5,
+          "sudafrica": 3
+        },
+        "pases": {
+          "mexico": {
+            "completados": 491,
+            "precision": "91%"
+          },
+          "sudafrica": {
+            "completados": 285,
+            "precision": "83%"
+          }
+        },
+        "tiros_de_esquina": {
+          "mexico": 3,
+          "sudafrica": 1
+        },
+        "faltas_cometidas": {
+          "mexico": 12,
+          "sudafrica": 11
+        },
+        "tarjetas_amarillas": {
+          "mexico": 1,
+          "sudafrica": 2
+        },
+        "tarjetas_rojas": {
+          "mexico": 1,
+          "sudafrica": 2
+        }
+      }
     },
     {
       "id": 2,
