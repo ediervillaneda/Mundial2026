@@ -71,8 +71,8 @@ IDX_RONDA = {
     "final": 5,
 }
 
-_CAMPOS_CONFIG = {"id", "group", "team1", "team2", "date", "time"}
-_CAMPOS_RESULTADO = {"halftime1", "halftime2", "fulltime1", "fulltime2", "played", "goles", "estadisticas_colectivas"}
+_CAMPOS_CONFIG = ("id", "group", "team1", "team2", "date", "time")
+_CAMPOS_RESULTADO = ("halftime1", "halftime2", "fulltime1", "fulltime2", "played", "goles", "estadisticas_colectivas")
 _DEFAULTS_RESULTADO = {"halftime1": None, "halftime2": None, "fulltime1": None, "fulltime2": None, "played": False}
 
 
