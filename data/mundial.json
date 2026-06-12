@@ -75,578 +75,578 @@
   },
   "matches": [
     {
-      "team2": "Sudáfrica",
-      "group": "A",
       "id": 1,
+      "group": "A",
       "team1": "México",
+      "team2": "Sudáfrica",
       "date": "2026-06-11",
       "time": "14:00"
     },
     {
-      "team2": "Corea del Sur",
-      "group": "A",
       "id": 2,
+      "group": "A",
       "team1": "México",
+      "team2": "Corea del Sur",
       "date": "2026-06-18",
       "time": "22:00"
     },
     {
-      "team2": "República Checa",
-      "group": "A",
       "id": 3,
+      "group": "A",
       "team1": "México",
-      "date": "2026-06-24",
-      "time": "20:00"
-    },
-    {
-      "team2": "Corea del Sur",
-      "group": "A",
-      "id": 4,
-      "team1": "Sudáfrica",
-      "date": "2026-06-24",
-      "time": "20:00"
-    },
-    {
       "team2": "República Checa",
+      "date": "2026-06-24",
+      "time": "20:00"
+    },
+    {
+      "id": 4,
       "group": "A",
-      "id": 5,
       "team1": "Sudáfrica",
+      "team2": "Corea del Sur",
+      "date": "2026-06-24",
+      "time": "20:00"
+    },
+    {
+      "id": 5,
+      "group": "A",
+      "team1": "Sudáfrica",
+      "team2": "República Checa",
       "date": "2026-06-18",
       "time": "11:00"
     },
     {
-      "team2": "República Checa",
-      "group": "A",
       "id": 6,
+      "group": "A",
       "team1": "Corea del Sur",
+      "team2": "República Checa",
       "date": "2026-06-11",
       "time": "21:00"
     },
     {
-      "team2": "Suiza",
-      "group": "B",
       "id": 7,
+      "group": "B",
       "team1": "Canadá",
+      "team2": "Suiza",
       "date": "2026-06-24",
       "time": "14:00"
     },
     {
-      "team2": "Catar",
-      "group": "B",
       "id": 8,
-      "team1": "Canadá",
-      "date": "2026-06-18",
-      "time": "17:00"
-    },
-    {
-      "team2": "Bosnia y Herzegovina",
       "group": "B",
-      "id": 9,
       "team1": "Canadá",
-      "date": "2026-06-12",
-      "time": "14:00"
-    },
-    {
       "team2": "Catar",
+      "date": "2026-06-18",
+      "time": "17:00"
+    },
+    {
+      "id": 9,
       "group": "B",
+      "team1": "Canadá",
+      "team2": "Bosnia y Herzegovina",
+      "date": "2026-06-12",
+      "time": "14:00"
+    },
+    {
       "id": 10,
+      "group": "B",
       "team1": "Suiza",
+      "team2": "Catar",
       "date": "2026-06-13",
       "time": "14:00"
     },
     {
-      "team2": "Bosnia y Herzegovina",
-      "group": "B",
       "id": 11,
+      "group": "B",
       "team1": "Suiza",
+      "team2": "Bosnia y Herzegovina",
       "date": "2026-06-18",
       "time": "14:00"
     },
     {
-      "team2": "Bosnia y Herzegovina",
-      "group": "B",
       "id": 12,
+      "group": "B",
       "team1": "Catar",
+      "team2": "Bosnia y Herzegovina",
       "date": "2026-06-24",
       "time": "14:00"
     },
     {
-      "team2": "Marruecos",
-      "group": "C",
       "id": 13,
+      "group": "C",
       "team1": "Brasil",
+      "team2": "Marruecos",
       "date": "2026-06-13",
       "time": "17:00"
     },
     {
-      "team2": "Haití",
-      "group": "C",
       "id": 14,
+      "group": "C",
       "team1": "Brasil",
+      "team2": "Haití",
       "date": "2026-06-19",
       "time": "20:00"
     },
     {
-      "team2": "Escocia",
-      "group": "C",
       "id": 15,
+      "group": "C",
       "team1": "Brasil",
-      "date": "2026-06-24",
-      "time": "17:00"
-    },
-    {
-      "team2": "Haití",
-      "group": "C",
-      "id": 16,
-      "team1": "Marruecos",
-      "date": "2026-06-24",
-      "time": "17:00"
-    },
-    {
       "team2": "Escocia",
+      "date": "2026-06-24",
+      "time": "17:00"
+    },
+    {
+      "id": 16,
       "group": "C",
-      "id": 17,
       "team1": "Marruecos",
+      "team2": "Haití",
+      "date": "2026-06-24",
+      "time": "17:00"
+    },
+    {
+      "id": 17,
+      "group": "C",
+      "team1": "Marruecos",
+      "team2": "Escocia",
       "date": "2026-06-19",
       "time": "17:00"
     },
     {
-      "team2": "Escocia",
-      "group": "C",
       "id": 18,
+      "group": "C",
       "team1": "Haití",
+      "team2": "Escocia",
       "date": "2026-06-13",
       "time": "20:00"
     },
     {
-      "team2": "Paraguay",
-      "group": "D",
       "id": 19,
+      "group": "D",
       "team1": "EE. UU.",
+      "team2": "Paraguay",
       "date": "2026-06-12",
       "time": "20:00"
     },
     {
-      "team2": "Australia",
-      "group": "D",
       "id": 20,
+      "group": "D",
       "team1": "EE. UU.",
+      "team2": "Australia",
       "date": "2026-06-19",
       "time": "14:00"
     },
     {
-      "team2": "Turquía",
-      "group": "D",
       "id": 21,
+      "group": "D",
       "team1": "EE. UU.",
-      "date": "2026-06-25",
-      "time": "21:00"
-    },
-    {
-      "team2": "Australia",
-      "group": "D",
-      "id": 22,
-      "team1": "Paraguay",
-      "date": "2026-06-25",
-      "time": "21:00"
-    },
-    {
       "team2": "Turquía",
+      "date": "2026-06-25",
+      "time": "21:00"
+    },
+    {
+      "id": 22,
       "group": "D",
-      "id": 23,
       "team1": "Paraguay",
+      "team2": "Australia",
+      "date": "2026-06-25",
+      "time": "21:00"
+    },
+    {
+      "id": 23,
+      "group": "D",
+      "team1": "Paraguay",
+      "team2": "Turquía",
       "date": "2026-06-19",
       "time": "23:00"
     },
     {
-      "team2": "Turquía",
-      "group": "D",
       "id": 24,
+      "group": "D",
       "team1": "Australia",
+      "team2": "Turquía",
       "date": "2026-06-13",
       "time": "23:00"
     },
     {
-      "team2": "Ecuador",
-      "group": "E",
       "id": 25,
+      "group": "E",
       "team1": "Alemania",
+      "team2": "Ecuador",
       "date": "2026-06-25",
       "time": "15:00"
     },
     {
-      "team2": "Costa de Marfil",
-      "group": "E",
       "id": 26,
+      "group": "E",
       "team1": "Alemania",
+      "team2": "Costa de Marfil",
       "date": "2026-06-20",
       "time": "15:00"
     },
     {
-      "team2": "Curazao",
-      "group": "E",
       "id": 27,
+      "group": "E",
       "team1": "Alemania",
+      "team2": "Curazao",
       "date": "2026-06-14",
       "time": "12:00"
     },
     {
-      "team2": "Costa de Marfil",
-      "group": "E",
       "id": 28,
+      "group": "E",
       "team1": "Ecuador",
+      "team2": "Costa de Marfil",
       "date": "2026-06-14",
       "time": "18:00"
     },
     {
-      "team2": "Curazao",
-      "group": "E",
       "id": 29,
+      "group": "E",
       "team1": "Ecuador",
+      "team2": "Curazao",
       "date": "2026-06-20",
       "time": "19:00"
     },
     {
-      "team2": "Curazao",
-      "group": "E",
       "id": 30,
+      "group": "E",
       "team1": "Costa de Marfil",
+      "team2": "Curazao",
       "date": "2026-06-25",
       "time": "15:00"
     },
     {
-      "team2": "Japón",
-      "group": "F",
       "id": 31,
+      "group": "F",
       "team1": "Países Bajos",
+      "team2": "Japón",
       "date": "2026-06-14",
       "time": "15:00"
     },
     {
-      "team2": "Túnez",
-      "group": "F",
       "id": 32,
+      "group": "F",
       "team1": "Países Bajos",
+      "team2": "Túnez",
       "date": "2026-06-25",
       "time": "18:00"
     },
     {
-      "team2": "Suecia",
-      "group": "F",
       "id": 33,
+      "group": "F",
       "team1": "Países Bajos",
+      "team2": "Suecia",
       "date": "2026-06-20",
       "time": "12:00"
     },
     {
-      "team2": "Túnez",
-      "group": "F",
       "id": 34,
+      "group": "F",
       "team1": "Japón",
+      "team2": "Túnez",
       "date": "2026-06-20",
       "time": "23:00"
     },
     {
-      "team2": "Suecia",
-      "group": "F",
       "id": 35,
+      "group": "F",
       "team1": "Japón",
+      "team2": "Suecia",
       "date": "2026-06-25",
       "time": "18:00"
     },
     {
-      "team2": "Suecia",
-      "group": "F",
       "id": 36,
+      "group": "F",
       "team1": "Túnez",
+      "team2": "Suecia",
       "date": "2026-06-15",
       "time": "21:00"
     },
     {
-      "team2": "Irán",
-      "group": "G",
       "id": 37,
+      "group": "G",
       "team1": "Bélgica",
+      "team2": "Irán",
       "date": "2026-06-21",
       "time": "14:00"
     },
     {
-      "team2": "Egipto",
-      "group": "G",
       "id": 38,
+      "group": "G",
       "team1": "Bélgica",
+      "team2": "Egipto",
       "date": "2026-06-15",
       "time": "17:00"
     },
     {
-      "team2": "Nueva Zelanda",
-      "group": "G",
       "id": 39,
+      "group": "G",
       "team1": "Bélgica",
-      "date": "2026-06-26",
-      "time": "22:00"
-    },
-    {
-      "team2": "Egipto",
-      "group": "G",
-      "id": 40,
-      "team1": "Irán",
-      "date": "2026-06-26",
-      "time": "22:00"
-    },
-    {
       "team2": "Nueva Zelanda",
+      "date": "2026-06-26",
+      "time": "22:00"
+    },
+    {
+      "id": 40,
       "group": "G",
-      "id": 41,
       "team1": "Irán",
+      "team2": "Egipto",
+      "date": "2026-06-26",
+      "time": "22:00"
+    },
+    {
+      "id": 41,
+      "group": "G",
+      "team1": "Irán",
+      "team2": "Nueva Zelanda",
       "date": "2026-06-15",
       "time": "23:00"
     },
     {
-      "team2": "Nueva Zelanda",
-      "group": "G",
       "id": 42,
+      "group": "G",
       "team1": "Egipto",
+      "team2": "Nueva Zelanda",
       "date": "2026-06-21",
       "time": "20:00"
     },
     {
-      "team2": "Uruguay",
-      "group": "H",
       "id": 43,
+      "group": "H",
       "team1": "España",
+      "team2": "Uruguay",
       "date": "2026-06-26",
       "time": "19:00"
     },
     {
-      "team2": "Arabia Saudita",
-      "group": "H",
       "id": 44,
+      "group": "H",
       "team1": "España",
+      "team2": "Arabia Saudita",
       "date": "2026-06-21",
       "time": "11:00"
     },
     {
-      "team2": "Cabo Verde",
-      "group": "H",
       "id": 45,
+      "group": "H",
       "team1": "España",
+      "team2": "Cabo Verde",
       "date": "2026-06-15",
       "time": "12:00"
     },
     {
-      "team2": "Arabia Saudita",
-      "group": "H",
       "id": 46,
+      "group": "H",
       "team1": "Uruguay",
+      "team2": "Arabia Saudita",
       "date": "2026-06-15",
       "time": "17:00"
     },
     {
-      "team2": "Cabo Verde",
-      "group": "H",
       "id": 47,
+      "group": "H",
       "team1": "Uruguay",
+      "team2": "Cabo Verde",
       "date": "2026-06-21",
       "time": "17:00"
     },
     {
-      "team2": "Cabo Verde",
-      "group": "H",
       "id": 48,
+      "group": "H",
       "team1": "Arabia Saudita",
+      "team2": "Cabo Verde",
       "date": "2026-06-26",
       "time": "19:00"
     },
     {
-      "team2": "Senegal",
-      "group": "I",
       "id": 49,
+      "group": "I",
       "team1": "Francia",
+      "team2": "Senegal",
       "date": "2026-06-16",
       "time": "14:00"
     },
     {
-      "team2": "Noruega",
-      "group": "I",
       "id": 50,
+      "group": "I",
       "team1": "Francia",
+      "team2": "Noruega",
       "date": "2026-06-26",
       "time": "14:00"
     },
     {
-      "team2": "Irak",
-      "group": "I",
       "id": 51,
+      "group": "I",
       "team1": "Francia",
+      "team2": "Irak",
       "date": "2026-06-22",
       "time": "16:00"
     },
     {
-      "team2": "Noruega",
-      "group": "I",
       "id": 52,
+      "group": "I",
       "team1": "Senegal",
+      "team2": "Noruega",
       "date": "2026-06-22",
       "time": "19:00"
     },
     {
-      "team2": "Irak",
-      "group": "I",
       "id": 53,
+      "group": "I",
       "team1": "Senegal",
+      "team2": "Irak",
       "date": "2026-06-26",
       "time": "14:00"
     },
     {
-      "team2": "Irak",
-      "group": "I",
       "id": 54,
+      "group": "I",
       "team1": "Noruega",
+      "team2": "Irak",
       "date": "2026-06-16",
       "time": "17:00"
     },
     {
-      "team2": "Argelia",
-      "group": "J",
       "id": 55,
+      "group": "J",
       "team1": "Argentina",
+      "team2": "Argelia",
       "date": "2026-06-16",
       "time": "20:00"
     },
     {
-      "team2": "Austria",
-      "group": "J",
       "id": 56,
+      "group": "J",
       "team1": "Argentina",
+      "team2": "Austria",
       "date": "2026-06-22",
       "time": "12:00"
     },
     {
-      "team2": "Jordania",
-      "group": "J",
       "id": 57,
+      "group": "J",
       "team1": "Argentina",
-      "date": "2026-06-27",
-      "time": "21:00"
-    },
-    {
-      "team2": "Austria",
-      "group": "J",
-      "id": 58,
-      "team1": "Argelia",
-      "date": "2026-06-27",
-      "time": "21:00"
-    },
-    {
       "team2": "Jordania",
+      "date": "2026-06-27",
+      "time": "21:00"
+    },
+    {
+      "id": 58,
       "group": "J",
-      "id": 59,
       "team1": "Argelia",
+      "team2": "Austria",
+      "date": "2026-06-27",
+      "time": "21:00"
+    },
+    {
+      "id": 59,
+      "group": "J",
+      "team1": "Argelia",
+      "team2": "Jordania",
       "date": "2026-06-22",
       "time": "22:00"
     },
     {
-      "team2": "Jordania",
-      "group": "J",
       "id": 60,
+      "group": "J",
       "team1": "Austria",
+      "team2": "Jordania",
       "date": "2026-06-16",
       "time": "23:00"
     },
     {
-      "team2": "Colombia",
-      "group": "K",
       "id": 61,
+      "group": "K",
       "team1": "Portugal",
+      "team2": "Colombia",
       "date": "2026-06-27",
       "time": "18:30"
     },
     {
-      "team2": "Uzbekistán",
-      "group": "K",
       "id": 62,
-      "team1": "Portugal",
-      "date": "2026-06-23",
-      "time": "12:00"
-    },
-    {
-      "team2": "RD Congo",
       "group": "K",
-      "id": 63,
       "team1": "Portugal",
-      "date": "2026-06-17",
-      "time": "12:00"
-    },
-    {
       "team2": "Uzbekistán",
+      "date": "2026-06-23",
+      "time": "12:00"
+    },
+    {
+      "id": 63,
       "group": "K",
+      "team1": "Portugal",
+      "team2": "RD Congo",
+      "date": "2026-06-17",
+      "time": "12:00"
+    },
+    {
       "id": 64,
+      "group": "K",
       "team1": "Colombia",
+      "team2": "Uzbekistán",
       "date": "2026-06-17",
       "time": "21:00"
     },
     {
-      "team2": "RD Congo",
-      "group": "K",
       "id": 65,
+      "group": "K",
       "team1": "Colombia",
+      "team2": "RD Congo",
       "date": "2026-06-23",
       "time": "21:00"
     },
     {
-      "team2": "RD Congo",
-      "group": "K",
       "id": 66,
+      "group": "K",
       "team1": "Uzbekistán",
+      "team2": "RD Congo",
       "date": "2026-06-27",
       "time": "18:30"
     },
     {
-      "team2": "Croacia",
-      "group": "L",
       "id": 67,
+      "group": "L",
       "team1": "Inglaterra",
+      "team2": "Croacia",
       "date": "2026-06-17",
       "time": "15:00"
     },
     {
-      "team2": "Ghana",
-      "group": "L",
       "id": 68,
+      "group": "L",
       "team1": "Inglaterra",
+      "team2": "Ghana",
       "date": "2026-06-23",
       "time": "15:00"
     },
     {
-      "team2": "Panamá",
-      "group": "L",
       "id": 69,
+      "group": "L",
       "team1": "Inglaterra",
-      "date": "2026-06-27",
-      "time": "16:00"
-    },
-    {
-      "team2": "Ghana",
-      "group": "L",
-      "id": 70,
-      "team1": "Croacia",
-      "date": "2026-06-27",
-      "time": "16:00"
-    },
-    {
       "team2": "Panamá",
+      "date": "2026-06-27",
+      "time": "16:00"
+    },
+    {
+      "id": 70,
       "group": "L",
-      "id": 71,
       "team1": "Croacia",
+      "team2": "Ghana",
+      "date": "2026-06-27",
+      "time": "16:00"
+    },
+    {
+      "id": 71,
+      "group": "L",
+      "team1": "Croacia",
+      "team2": "Panamá",
       "date": "2026-06-23",
       "time": "18:00"
     },
     {
-      "team2": "Panamá",
-      "group": "L",
       "id": 72,
+      "group": "L",
       "team1": "Ghana",
+      "team2": "Panamá",
       "date": "2026-06-17",
       "time": "18:00"
     }
