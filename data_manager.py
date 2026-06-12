@@ -223,7 +223,7 @@ class MundialData:
         for m in self.data["matches"]:
             mid = str(m.get("id", ""))
             old = partidos_res.get(mid, {})
-            if "fulltime1" in old and m.get("score1") is None:
+            if "fulltime1" in old and "fulltime2" in old and m.get("score1") is None:
                 m["score1"] = old["fulltime1"]
                 m["score2"] = old["fulltime2"]
                 m["played"] = old.get("played", False)
@@ -254,7 +254,9 @@ class MundialData:
         if os.path.exists(STATS_FILE):
             try:
                 with open(STATS_FILE, "r", encoding="utf-8") as f:
-                    return json.load(f)
+                    data = json.load(f)
+                if isinstance(data, dict):
+                    return data
             except json.JSONDecodeError:
                 pass
         return {"partidos": {}}
