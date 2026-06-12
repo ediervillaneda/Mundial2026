@@ -40,8 +40,7 @@
                 <div class="partido-score-wrap">
                     <span class="partido-marcador" onclick="activarEdicionMarcador({{ p.id }})">
                         {% if p.played %}
-                        <strong>{{ p.fulltime1 }} – {{ p.fulltime2 }}</strong>
-                        {% if p.halftime1 is not none %}<small>({{ p.halftime1 }}-{{ p.halftime2 }})</small>{% endif %}
+                        <strong>{{ p.score1 }} – {{ p.score2 }}</strong>
                         {% else %}
                         <span class="vs-text">vs</span>
                         {% endif %}

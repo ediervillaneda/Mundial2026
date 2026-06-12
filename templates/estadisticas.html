@@ -101,9 +101,9 @@
                 <div class="mejor-row">
                     <span class="mejor-grupo">{{ p.group }}</span>
                     <span class="mejor-team">{{ p.team1 | flag }}</span>
-                    <span class="mejor-score">{{ p.fulltime1 }} – {{ p.fulltime2 }}</span>
+                    <span class="mejor-score">{{ p.score1 }} – {{ p.score2 }}</span>
                     <span class="mejor-team mejor-team-r">{{ p.team2 | flag_r }}</span>
-                    <span class="mejor-total">{{ p.fulltime1 + p.fulltime2 }} goles</span>
+                    <span class="mejor-total">{{ p.score1 + p.score2 }} goles</span>
                 </div>
                 {% endfor %}
             </div>
@@ -121,7 +121,7 @@
                 <div class="det-partido" id="det-{{ p.id }}">
                     <div class="det-header" onclick="toggleDet({{ p.id }})">
                         <span class="det-grupo">{{ p.group }}</span>
-                        <span class="det-teams">{{ p.team1 | flag }} <strong>{{ p.fulltime1 }} – {{ p.fulltime2 }}</strong> {{ p.team2 | flag_r }}</span>
+                        <span class="det-teams">{{ p.team1 | flag }} <strong>{{ p.score1 }} – {{ p.score2 }}</strong> {{ p.team2 | flag_r }}</span>
                         <span class="det-date">{% if p.date %}{{ p.date.split('-')[2] }}/{{ p.date.split('-')[1] }}{% endif %}</span>
                         <span class="det-chevron" id="chev-{{ p.id }}">▼</span>
                     </div>
@@ -206,7 +206,7 @@
                 <option value="">-- Selecciona un partido --</option>
                 {% for p in todos_partidos %}
                 {% if p.played %}
-                <option value="{{ p.id }}">{{ p.group }} · {{ p.team1 }} {{ p.fulltime1 }}–{{ p.fulltime2 }} {{ p.team2 }}</option>
+                <option value="{{ p.id }}">{{ p.group }} · {{ p.team1 }} {{ p.score1 }}–{{ p.score2 }} {{ p.team2 }}</option>
                 {% endif %}
                 {% endfor %}
             </select>
