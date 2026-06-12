@@ -1,10 +1,18 @@
 import json
 import os
+import sys
 from copy import deepcopy
 from datetime import datetime
 
-DATA_FILE = os.path.join(os.path.dirname(__file__), "data", "mundial.json")
-RESULTS_FILE = os.path.join(os.path.dirname(__file__), "data", "resultados.json")
+
+def _base_dir():
+    if getattr(sys, 'frozen', False):
+        return os.path.dirname(sys.executable)
+    return os.path.dirname(os.path.abspath(__file__))
+
+
+DATA_FILE = os.path.join(_base_dir(), "data", "mundial.json")
+RESULTS_FILE = os.path.join(_base_dir(), "data", "resultados.json")
 
 BANDERAS = {
     "México": "mx", "Sudáfrica": "za", "Corea del Sur": "kr", "República Checa": "cz",
