@@ -4,6 +4,7 @@ from copy import deepcopy
 from datetime import datetime
 
 DATA_FILE = os.path.join(os.path.dirname(__file__), "data", "mundial.json")
+RESULTS_FILE = os.path.join(os.path.dirname(__file__), "data", "resultados.json")
 
 BANDERAS = {
     "México": "mx", "Sudáfrica": "za", "Corea del Sur": "kr", "República Checa": "cz",
@@ -70,19 +71,27 @@ IDX_RONDA = {
     "final": 5,
 }
 
+_CAMPOS_CONFIG = {"id", "group", "team1", "team2", "date", "time"}
+_CAMPOS_RESULTADO = {"halftime1", "halftime2", "fulltime1", "fulltime2", "played", "goles", "estadisticas_colectivas"}
+_DEFAULTS_RESULTADO = {"halftime1": None, "halftime2": None, "fulltime1": None, "fulltime2": None, "played": False}
+
+
+def _crear_knockout_vacio():
+    return {
+        "round_of_32": {"matches": _generar_matches_vacios(16)},
+        "round_of_16": {"matches": _generar_matches_vacios(8)},
+        "quarter_finals": {"matches": _generar_matches_vacios(4)},
+        "semi_finals": {"matches": _generar_matches_vacios(2)},
+        "third_place": _generar_match_vacio(),
+        "final": _generar_match_vacio(),
+    }
+
 
 def crear_estructura_inicial():
     return {
         "groups": deepcopy(GRUPOS_2026),
         "matches": _generar_partidos_grupos_iniciales(),
-        "knockout": {
-            "round_of_32": {"matches": _generar_matches_vacios(16)},
-            "round_of_16": {"matches": _generar_matches_vacios(8)},
-            "quarter_finals": {"matches": _generar_matches_vacios(4)},
-            "semi_finals": {"matches": _generar_matches_vacios(2)},
-            "third_place": _generar_match_vacio(),
-            "final": _generar_match_vacio(),
-        },
+        "knockout": _crear_knockout_vacio(),
         "knockout_generated": False,
     }
 
@@ -177,21 +186,91 @@ class MundialData:
         self.cargar()
 
     def cargar(self):
+        config = self._cargar_config()
+        resultados = self._cargar_resultados(config)
+
+        self.data = {
+            "groups": config.get("groups", deepcopy(GRUPOS_2026)),
+            "matches": [],
+            "knockout": resultados.get("knockout", _crear_knockout_vacio()),
+            "knockout_generated": resultados.get("knockout_generated", False),
+        }
+
+        partidos_res = resultados.get("partidos", {})
+        config_matches = config.get("matches", [])
+        for m in config_matches:
+            partido = {k: m[k] for k in _CAMPOS_CONFIG if k in m}
+            partido.update(_DEFAULTS_RESULTADO.copy())
+            mid = str(m.get("id", ""))
+            if mid in partidos_res:
+                partido.update(partidos_res[mid])
+            self.data["matches"].append(partido)
+
+        # Limpia formato viejo de mundial.json si aún tiene campos de resultado
+        if config_matches and any(k in config_matches[0] for k in _CAMPOS_RESULTADO):
+            self.guardar()
+
+    def _cargar_config(self):
         if os.path.exists(DATA_FILE):
             try:
                 with open(DATA_FILE, "r", encoding="utf-8") as f:
-                    self.data = json.load(f)
+                    return json.load(f)
             except json.JSONDecodeError:
-                self.data = crear_estructura_inicial()
-                self.guardar()
-        else:
-            self.data = crear_estructura_inicial()
-            self.guardar()
-
-    def guardar(self):
+                pass
+        cfg = {"groups": deepcopy(GRUPOS_2026), "matches": _generar_partidos_grupos_iniciales()}
         os.makedirs(os.path.dirname(DATA_FILE), exist_ok=True)
         with open(DATA_FILE, "w", encoding="utf-8") as f:
-            json.dump(self.data, f, indent=2, ensure_ascii=False)
+            json.dump({"groups": cfg["groups"], "matches": [{k: m[k] for k in _CAMPOS_CONFIG if k in m} for m in cfg["matches"]]}, f, indent=2, ensure_ascii=False)
+        return cfg
+
+    def _cargar_resultados(self, config):
+        if os.path.exists(RESULTS_FILE):
+            try:
+                with open(RESULTS_FILE, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except json.JSONDecodeError:
+                pass
+
+        # Migración desde formato antiguo (mundial.json con scores/knockout mezclados)
+        partidos = {}
+        for m in config.get("matches", []):
+            resultado = {k: m[k] for k in _CAMPOS_RESULTADO if k in m}
+            if resultado.get("played") or resultado.get("fulltime1") is not None:
+                partidos[str(m["id"])] = resultado
+
+        resultados = {
+            "partidos": partidos,
+            "knockout": config.pop("knockout", _crear_knockout_vacio()),
+            "knockout_generated": config.pop("knockout_generated", False),
+        }
+        os.makedirs(os.path.dirname(RESULTS_FILE), exist_ok=True)
+        with open(RESULTS_FILE, "w", encoding="utf-8") as f:
+            json.dump(resultados, f, indent=2, ensure_ascii=False)
+        return resultados
+
+    def guardar(self):
+        data_dir = os.path.dirname(DATA_FILE)
+        os.makedirs(data_dir, exist_ok=True)
+
+        config = {
+            "groups": self.data["groups"],
+            "matches": [{k: m[k] for k in _CAMPOS_CONFIG if k in m} for m in self.data["matches"]],
+        }
+        with open(DATA_FILE, "w", encoding="utf-8") as f:
+            json.dump(config, f, indent=2, ensure_ascii=False)
+
+        partidos = {}
+        for m in self.data["matches"]:
+            if m.get("played") or m.get("fulltime1") is not None:
+                partidos[str(m["id"])] = {k: m[k] for k in _CAMPOS_RESULTADO if k in m}
+
+        resultados = {
+            "partidos": partidos,
+            "knockout": self.data["knockout"],
+            "knockout_generated": self.data["knockout_generated"],
+        }
+        with open(RESULTS_FILE, "w", encoding="utf-8") as f:
+            json.dump(resultados, f, indent=2, ensure_ascii=False)
 
     def get_grupos(self):
         return self.data["groups"]
@@ -600,13 +679,6 @@ class MundialData:
         }
 
     def reiniciar_eliminatorias(self):
-        self.data["knockout"] = {
-            "round_of_32": {"matches": _generar_matches_vacios(16)},
-            "round_of_16": {"matches": _generar_matches_vacios(8)},
-            "quarter_finals": {"matches": _generar_matches_vacios(4)},
-            "semi_finals": {"matches": _generar_matches_vacios(2)},
-            "third_place": _generar_match_vacio(),
-            "final": _generar_match_vacio(),
-        }
+        self.data["knockout"] = _crear_knockout_vacio()
         self.data["knockout_generated"] = False
         self.guardar()

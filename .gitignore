@@ -6,3 +6,5 @@ build/
 *.spec
 .ruff_cache/
 nul
+.claude/settings.local.json
+data/resultados.json

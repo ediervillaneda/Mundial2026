@@ -75,1365 +75,580 @@
   },
   "matches": [
     {
-      "id": 1,
-      "group": "A",
-      "team1": "México",
       "team2": "Sudáfrica",
+      "group": "A",
+      "id": 1,
+      "team1": "México",
       "date": "2026-06-11",
-      "time": "14:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": 2,
-      "fulltime2": 0,
-      "played": true,
-      "goles": [
-        {
-          "minuto": 9,
-          "equipo": "México",
-          "autor": "Julián Quiñones"
-        },
-        {
-          "minuto": 67,
-          "equipo": "México",
-          "autor": "Raúl Jiménez"
-        }
-      ],
-      "estadisticas_colectivas": {
-        "posicion_balon": {
-          "mexico": "61%",
-          "sudafrica": "39%"
-        },
-        "goles_esperados_xg": {
-          "mexico": 1.41,
-          "sudafrica": 0.07
-        },
-        "remates_totales": {
-          "mexico": 16,
-          "sudafrica": 4
-        },
-        "remates_al_arco": {
-          "mexico": 5,
-          "sudafrica": 3
-        },
-        "pases": {
-          "mexico": {
-            "completados": 491,
-            "precision": "91%"
-          },
-          "sudafrica": {
-            "completados": 285,
-            "precision": "83%"
-          }
-        },
-        "tiros_de_esquina": {
-          "mexico": 3,
-          "sudafrica": 1
-        },
-        "faltas_cometidas": {
-          "mexico": 12,
-          "sudafrica": 11
-        },
-        "tarjetas_amarillas": {
-          "mexico": 1,
-          "sudafrica": 2
-        },
-        "tarjetas_rojas": {
-          "mexico": 1,
-          "sudafrica": 2
-        }
-      }
+      "time": "14:00"
     },
     {
+      "team2": "Corea del Sur",
+      "group": "A",
       "id": 2,
-      "group": "A",
       "team1": "México",
-      "team2": "Corea del Sur",
       "date": "2026-06-18",
-      "time": "22:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "22:00"
     },
     {
+      "team2": "República Checa",
+      "group": "A",
       "id": 3,
-      "group": "A",
       "team1": "México",
-      "team2": "República Checa",
       "date": "2026-06-24",
-      "time": "20:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "20:00"
     },
     {
-      "id": 4,
-      "group": "A",
-      "team1": "Sudáfrica",
       "team2": "Corea del Sur",
-      "date": "2026-06-24",
-      "time": "20:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
-    },
-    {
-      "id": 5,
       "group": "A",
+      "id": 4,
       "team1": "Sudáfrica",
-      "team2": "República Checa",
-      "date": "2026-06-18",
-      "time": "11:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "date": "2026-06-24",
+      "time": "20:00"
     },
     {
-      "id": 6,
+      "team2": "República Checa",
       "group": "A",
-      "team1": "Corea del Sur",
+      "id": 5,
+      "team1": "Sudáfrica",
+      "date": "2026-06-18",
+      "time": "11:00"
+    },
+    {
       "team2": "República Checa",
+      "group": "A",
+      "id": 6,
+      "team1": "Corea del Sur",
       "date": "2026-06-11",
-      "time": "21:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "21:00"
     },
     {
-      "id": 7,
-      "group": "B",
-      "team1": "Canadá",
       "team2": "Suiza",
+      "group": "B",
+      "id": 7,
+      "team1": "Canadá",
       "date": "2026-06-24",
-      "time": "14:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "14:00"
     },
     {
+      "team2": "Catar",
+      "group": "B",
       "id": 8,
-      "group": "B",
       "team1": "Canadá",
-      "team2": "Catar",
       "date": "2026-06-18",
-      "time": "17:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "17:00"
     },
     {
+      "team2": "Bosnia y Herzegovina",
+      "group": "B",
       "id": 9,
-      "group": "B",
       "team1": "Canadá",
-      "team2": "Bosnia y Herzegovina",
       "date": "2026-06-12",
-      "time": "14:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "14:00"
     },
     {
-      "id": 10,
-      "group": "B",
-      "team1": "Suiza",
       "team2": "Catar",
-      "date": "2026-06-13",
-      "time": "14:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
-    },
-    {
-      "id": 11,
       "group": "B",
+      "id": 10,
       "team1": "Suiza",
-      "team2": "Bosnia y Herzegovina",
-      "date": "2026-06-18",
-      "time": "14:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "date": "2026-06-13",
+      "time": "14:00"
     },
     {
-      "id": 12,
+      "team2": "Bosnia y Herzegovina",
       "group": "B",
-      "team1": "Catar",
+      "id": 11,
+      "team1": "Suiza",
+      "date": "2026-06-18",
+      "time": "14:00"
+    },
+    {
       "team2": "Bosnia y Herzegovina",
+      "group": "B",
+      "id": 12,
+      "team1": "Catar",
       "date": "2026-06-24",
-      "time": "14:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "14:00"
     },
     {
-      "id": 13,
-      "group": "C",
-      "team1": "Brasil",
       "team2": "Marruecos",
+      "group": "C",
+      "id": 13,
+      "team1": "Brasil",
       "date": "2026-06-13",
-      "time": "17:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "17:00"
     },
     {
+      "team2": "Haití",
+      "group": "C",
       "id": 14,
-      "group": "C",
       "team1": "Brasil",
-      "team2": "Haití",
       "date": "2026-06-19",
-      "time": "20:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "20:00"
     },
     {
+      "team2": "Escocia",
+      "group": "C",
       "id": 15,
-      "group": "C",
       "team1": "Brasil",
-      "team2": "Escocia",
       "date": "2026-06-24",
-      "time": "17:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "17:00"
     },
     {
-      "id": 16,
-      "group": "C",
-      "team1": "Marruecos",
       "team2": "Haití",
-      "date": "2026-06-24",
-      "time": "17:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
-    },
-    {
-      "id": 17,
       "group": "C",
+      "id": 16,
       "team1": "Marruecos",
-      "team2": "Escocia",
-      "date": "2026-06-19",
-      "time": "17:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "date": "2026-06-24",
+      "time": "17:00"
     },
     {
-      "id": 18,
+      "team2": "Escocia",
       "group": "C",
-      "team1": "Haití",
+      "id": 17,
+      "team1": "Marruecos",
+      "date": "2026-06-19",
+      "time": "17:00"
+    },
+    {
       "team2": "Escocia",
+      "group": "C",
+      "id": 18,
+      "team1": "Haití",
       "date": "2026-06-13",
-      "time": "20:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "20:00"
     },
     {
-      "id": 19,
-      "group": "D",
-      "team1": "EE. UU.",
       "team2": "Paraguay",
+      "group": "D",
+      "id": 19,
+      "team1": "EE. UU.",
       "date": "2026-06-12",
-      "time": "20:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "20:00"
     },
     {
+      "team2": "Australia",
+      "group": "D",
       "id": 20,
-      "group": "D",
       "team1": "EE. UU.",
-      "team2": "Australia",
       "date": "2026-06-19",
-      "time": "14:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "14:00"
     },
     {
+      "team2": "Turquía",
+      "group": "D",
       "id": 21,
-      "group": "D",
       "team1": "EE. UU.",
-      "team2": "Turquía",
       "date": "2026-06-25",
-      "time": "21:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "21:00"
     },
     {
-      "id": 22,
-      "group": "D",
-      "team1": "Paraguay",
       "team2": "Australia",
-      "date": "2026-06-25",
-      "time": "21:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
-    },
-    {
-      "id": 23,
       "group": "D",
+      "id": 22,
       "team1": "Paraguay",
-      "team2": "Turquía",
-      "date": "2026-06-19",
-      "time": "23:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "date": "2026-06-25",
+      "time": "21:00"
     },
     {
-      "id": 24,
+      "team2": "Turquía",
       "group": "D",
-      "team1": "Australia",
+      "id": 23,
+      "team1": "Paraguay",
+      "date": "2026-06-19",
+      "time": "23:00"
+    },
+    {
       "team2": "Turquía",
+      "group": "D",
+      "id": 24,
+      "team1": "Australia",
       "date": "2026-06-13",
-      "time": "23:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "23:00"
     },
     {
-      "id": 25,
-      "group": "E",
-      "team1": "Alemania",
       "team2": "Ecuador",
+      "group": "E",
+      "id": 25,
+      "team1": "Alemania",
       "date": "2026-06-25",
-      "time": "15:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "15:00"
     },
     {
+      "team2": "Costa de Marfil",
+      "group": "E",
       "id": 26,
-      "group": "E",
       "team1": "Alemania",
-      "team2": "Costa de Marfil",
       "date": "2026-06-20",
-      "time": "15:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "15:00"
     },
     {
+      "team2": "Curazao",
+      "group": "E",
       "id": 27,
-      "group": "E",
       "team1": "Alemania",
-      "team2": "Curazao",
       "date": "2026-06-14",
-      "time": "12:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "12:00"
     },
     {
-      "id": 28,
-      "group": "E",
-      "team1": "Ecuador",
       "team2": "Costa de Marfil",
-      "date": "2026-06-14",
-      "time": "18:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
-    },
-    {
-      "id": 29,
       "group": "E",
+      "id": 28,
       "team1": "Ecuador",
-      "team2": "Curazao",
-      "date": "2026-06-20",
-      "time": "19:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
-    },
-    {
-      "id": 30,
-      "group": "E",
-      "team1": "Costa de Marfil",
-      "team2": "Curazao",
-      "date": "2026-06-25",
-      "time": "15:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
-    },
-    {
-      "id": 31,
-      "group": "F",
-      "team1": "Países Bajos",
-      "team2": "Japón",
       "date": "2026-06-14",
-      "time": "15:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "18:00"
     },
     {
+      "team2": "Curazao",
+      "group": "E",
+      "id": 29,
+      "team1": "Ecuador",
+      "date": "2026-06-20",
+      "time": "19:00"
+    },
+    {
+      "team2": "Curazao",
+      "group": "E",
+      "id": 30,
+      "team1": "Costa de Marfil",
+      "date": "2026-06-25",
+      "time": "15:00"
+    },
+    {
+      "team2": "Japón",
+      "group": "F",
+      "id": 31,
+      "team1": "Países Bajos",
+      "date": "2026-06-14",
+      "time": "15:00"
+    },
+    {
+      "team2": "Túnez",
+      "group": "F",
       "id": 32,
-      "group": "F",
       "team1": "Países Bajos",
-      "team2": "Túnez",
       "date": "2026-06-25",
-      "time": "18:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "18:00"
     },
     {
+      "team2": "Suecia",
+      "group": "F",
       "id": 33,
-      "group": "F",
       "team1": "Países Bajos",
-      "team2": "Suecia",
       "date": "2026-06-20",
-      "time": "12:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "12:00"
     },
     {
-      "id": 34,
-      "group": "F",
-      "team1": "Japón",
       "team2": "Túnez",
-      "date": "2026-06-20",
-      "time": "23:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
-    },
-    {
-      "id": 35,
       "group": "F",
+      "id": 34,
       "team1": "Japón",
-      "team2": "Suecia",
-      "date": "2026-06-25",
-      "time": "18:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "date": "2026-06-20",
+      "time": "23:00"
     },
     {
-      "id": 36,
+      "team2": "Suecia",
       "group": "F",
-      "team1": "Túnez",
+      "id": 35,
+      "team1": "Japón",
+      "date": "2026-06-25",
+      "time": "18:00"
+    },
+    {
       "team2": "Suecia",
+      "group": "F",
+      "id": 36,
+      "team1": "Túnez",
       "date": "2026-06-15",
-      "time": "21:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "21:00"
     },
     {
-      "id": 37,
-      "group": "G",
-      "team1": "Bélgica",
       "team2": "Irán",
+      "group": "G",
+      "id": 37,
+      "team1": "Bélgica",
       "date": "2026-06-21",
-      "time": "14:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "14:00"
     },
     {
+      "team2": "Egipto",
+      "group": "G",
       "id": 38,
-      "group": "G",
       "team1": "Bélgica",
-      "team2": "Egipto",
       "date": "2026-06-15",
-      "time": "17:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "17:00"
     },
     {
+      "team2": "Nueva Zelanda",
+      "group": "G",
       "id": 39,
-      "group": "G",
       "team1": "Bélgica",
-      "team2": "Nueva Zelanda",
       "date": "2026-06-26",
-      "time": "22:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "22:00"
     },
     {
-      "id": 40,
-      "group": "G",
-      "team1": "Irán",
       "team2": "Egipto",
-      "date": "2026-06-26",
-      "time": "22:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
-    },
-    {
-      "id": 41,
       "group": "G",
+      "id": 40,
       "team1": "Irán",
-      "team2": "Nueva Zelanda",
-      "date": "2026-06-15",
-      "time": "23:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "date": "2026-06-26",
+      "time": "22:00"
     },
     {
-      "id": 42,
+      "team2": "Nueva Zelanda",
       "group": "G",
-      "team1": "Egipto",
+      "id": 41,
+      "team1": "Irán",
+      "date": "2026-06-15",
+      "time": "23:00"
+    },
+    {
       "team2": "Nueva Zelanda",
+      "group": "G",
+      "id": 42,
+      "team1": "Egipto",
       "date": "2026-06-21",
-      "time": "20:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "20:00"
     },
     {
-      "id": 43,
-      "group": "H",
-      "team1": "España",
       "team2": "Uruguay",
+      "group": "H",
+      "id": 43,
+      "team1": "España",
       "date": "2026-06-26",
-      "time": "19:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "19:00"
     },
     {
+      "team2": "Arabia Saudita",
+      "group": "H",
       "id": 44,
-      "group": "H",
       "team1": "España",
-      "team2": "Arabia Saudita",
       "date": "2026-06-21",
-      "time": "11:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "11:00"
     },
     {
+      "team2": "Cabo Verde",
+      "group": "H",
       "id": 45,
-      "group": "H",
       "team1": "España",
-      "team2": "Cabo Verde",
       "date": "2026-06-15",
-      "time": "12:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "12:00"
     },
     {
-      "id": 46,
-      "group": "H",
-      "team1": "Uruguay",
       "team2": "Arabia Saudita",
-      "date": "2026-06-15",
-      "time": "17:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
-    },
-    {
-      "id": 47,
       "group": "H",
+      "id": 46,
       "team1": "Uruguay",
-      "team2": "Cabo Verde",
-      "date": "2026-06-21",
-      "time": "17:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "date": "2026-06-15",
+      "time": "17:00"
     },
     {
-      "id": 48,
+      "team2": "Cabo Verde",
       "group": "H",
-      "team1": "Arabia Saudita",
+      "id": 47,
+      "team1": "Uruguay",
+      "date": "2026-06-21",
+      "time": "17:00"
+    },
+    {
       "team2": "Cabo Verde",
+      "group": "H",
+      "id": 48,
+      "team1": "Arabia Saudita",
       "date": "2026-06-26",
-      "time": "19:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "19:00"
     },
     {
-      "id": 49,
-      "group": "I",
-      "team1": "Francia",
       "team2": "Senegal",
+      "group": "I",
+      "id": 49,
+      "team1": "Francia",
       "date": "2026-06-16",
-      "time": "14:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "14:00"
     },
     {
+      "team2": "Noruega",
+      "group": "I",
       "id": 50,
-      "group": "I",
       "team1": "Francia",
-      "team2": "Noruega",
       "date": "2026-06-26",
-      "time": "14:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "14:00"
     },
     {
+      "team2": "Irak",
+      "group": "I",
       "id": 51,
-      "group": "I",
       "team1": "Francia",
-      "team2": "Irak",
       "date": "2026-06-22",
-      "time": "16:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "16:00"
     },
     {
-      "id": 52,
-      "group": "I",
-      "team1": "Senegal",
       "team2": "Noruega",
-      "date": "2026-06-22",
-      "time": "19:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
-    },
-    {
-      "id": 53,
       "group": "I",
+      "id": 52,
       "team1": "Senegal",
-      "team2": "Irak",
-      "date": "2026-06-26",
-      "time": "14:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "date": "2026-06-22",
+      "time": "19:00"
     },
     {
-      "id": 54,
+      "team2": "Irak",
       "group": "I",
-      "team1": "Noruega",
+      "id": 53,
+      "team1": "Senegal",
+      "date": "2026-06-26",
+      "time": "14:00"
+    },
+    {
       "team2": "Irak",
+      "group": "I",
+      "id": 54,
+      "team1": "Noruega",
       "date": "2026-06-16",
-      "time": "17:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "17:00"
     },
     {
-      "id": 55,
-      "group": "J",
-      "team1": "Argentina",
       "team2": "Argelia",
+      "group": "J",
+      "id": 55,
+      "team1": "Argentina",
       "date": "2026-06-16",
-      "time": "20:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "20:00"
     },
     {
+      "team2": "Austria",
+      "group": "J",
       "id": 56,
-      "group": "J",
       "team1": "Argentina",
-      "team2": "Austria",
       "date": "2026-06-22",
-      "time": "12:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "12:00"
     },
     {
+      "team2": "Jordania",
+      "group": "J",
       "id": 57,
-      "group": "J",
       "team1": "Argentina",
-      "team2": "Jordania",
       "date": "2026-06-27",
-      "time": "21:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "21:00"
     },
     {
-      "id": 58,
-      "group": "J",
-      "team1": "Argelia",
       "team2": "Austria",
-      "date": "2026-06-27",
-      "time": "21:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
-    },
-    {
-      "id": 59,
       "group": "J",
+      "id": 58,
       "team1": "Argelia",
-      "team2": "Jordania",
-      "date": "2026-06-22",
-      "time": "22:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "date": "2026-06-27",
+      "time": "21:00"
     },
     {
-      "id": 60,
+      "team2": "Jordania",
       "group": "J",
-      "team1": "Austria",
+      "id": 59,
+      "team1": "Argelia",
+      "date": "2026-06-22",
+      "time": "22:00"
+    },
+    {
       "team2": "Jordania",
+      "group": "J",
+      "id": 60,
+      "team1": "Austria",
       "date": "2026-06-16",
-      "time": "23:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "23:00"
     },
     {
-      "id": 61,
-      "group": "K",
-      "team1": "Portugal",
       "team2": "Colombia",
+      "group": "K",
+      "id": 61,
+      "team1": "Portugal",
       "date": "2026-06-27",
-      "time": "18:30",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "18:30"
     },
     {
+      "team2": "Uzbekistán",
+      "group": "K",
       "id": 62,
-      "group": "K",
       "team1": "Portugal",
-      "team2": "Uzbekistán",
       "date": "2026-06-23",
-      "time": "12:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "12:00"
     },
     {
+      "team2": "RD Congo",
+      "group": "K",
       "id": 63,
-      "group": "K",
       "team1": "Portugal",
-      "team2": "RD Congo",
       "date": "2026-06-17",
-      "time": "12:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "12:00"
     },
     {
-      "id": 64,
-      "group": "K",
-      "team1": "Colombia",
       "team2": "Uzbekistán",
-      "date": "2026-06-17",
-      "time": "21:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
-    },
-    {
-      "id": 65,
       "group": "K",
+      "id": 64,
       "team1": "Colombia",
-      "team2": "RD Congo",
-      "date": "2026-06-23",
-      "time": "21:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "date": "2026-06-17",
+      "time": "21:00"
     },
     {
-      "id": 66,
+      "team2": "RD Congo",
       "group": "K",
-      "team1": "Uzbekistán",
+      "id": 65,
+      "team1": "Colombia",
+      "date": "2026-06-23",
+      "time": "21:00"
+    },
+    {
       "team2": "RD Congo",
+      "group": "K",
+      "id": 66,
+      "team1": "Uzbekistán",
       "date": "2026-06-27",
-      "time": "18:30",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "18:30"
     },
     {
-      "id": 67,
-      "group": "L",
-      "team1": "Inglaterra",
       "team2": "Croacia",
+      "group": "L",
+      "id": 67,
+      "team1": "Inglaterra",
       "date": "2026-06-17",
-      "time": "15:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "15:00"
     },
     {
+      "team2": "Ghana",
+      "group": "L",
       "id": 68,
-      "group": "L",
       "team1": "Inglaterra",
-      "team2": "Ghana",
       "date": "2026-06-23",
-      "time": "15:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "15:00"
     },
     {
+      "team2": "Panamá",
+      "group": "L",
       "id": 69,
-      "group": "L",
       "team1": "Inglaterra",
-      "team2": "Panamá",
       "date": "2026-06-27",
-      "time": "16:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "16:00"
     },
     {
-      "id": 70,
-      "group": "L",
-      "team1": "Croacia",
       "team2": "Ghana",
-      "date": "2026-06-27",
-      "time": "16:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
-    },
-    {
-      "id": 71,
       "group": "L",
+      "id": 70,
       "team1": "Croacia",
-      "team2": "Panamá",
-      "date": "2026-06-23",
-      "time": "18:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "date": "2026-06-27",
+      "time": "16:00"
     },
     {
-      "id": 72,
-      "group": "L",
-      "team1": "Ghana",
       "team2": "Panamá",
+      "group": "L",
+      "id": 71,
+      "team1": "Croacia",
+      "date": "2026-06-23",
+      "time": "18:00"
+    },
+    {
+      "team2": "Panamá",
+      "group": "L",
+      "id": 72,
+      "team1": "Ghana",
       "date": "2026-06-17",
-      "time": "18:00",
-      "halftime1": null,
-      "halftime2": null,
-      "fulltime1": null,
-      "fulltime2": null,
-      "played": false
+      "time": "18:00"
     }
-  ],
-  "knockout": {
-    "round_of_32": {
-      "matches": [
-        {
-          "id": "KO-1",
-          "team1": null,
-          "team2": null,
-          "score1": null,
-          "score2": null,
-          "penalties1": null,
-          "penalties2": null,
-          "winner": null,
-          "played": false
-        },
-        {
-          "id": "KO-2",
-          "team1": null,
-          "team2": null,
-          "score1": null,
-          "score2": null,
-          "penalties1": null,
-          "penalties2": null,
-          "winner": null,
-          "played": false
-        },
-        {
-          "id": "KO-3",
-          "team1": null,
-          "team2": null,
-          "score1": null,
-          "score2": null,
-          "penalties1": null,
-          "penalties2": null,
-          "winner": null,
-          "played": false
-        },
-        {
-          "id": "KO-4",
-          "team1": null,
-          "team2": null,
-          "score1": null,
-          "score2": null,
-          "penalties1": null,
-          "penalties2": null,
-          "winner": null,
-          "played": false
-        },
-        {
-          "id": "KO-5",
-          "team1": null,
-          "team2": null,
-          "score1": null,
-          "score2": null,
-          "penalties1": null,
-          "penalties2": null,
-          "winner": null,
-          "played": false
-        },
-        {
-          "id": "KO-6",
-          "team1": null,
-          "team2": null,
-          "score1": null,
-          "score2": null,
-          "penalties1": null,
-          "penalties2": null,
-          "winner": null,
-          "played": false
-        },
-        {
-          "id": "KO-7",
-          "team1": null,
-          "team2": null,
-          "score1": null,
-          "score2": null,
-          "penalties1": null,
-          "penalties2": null,
-          "winner": null,
-          "played": false
-        },
-        {
-          "id": "KO-8",
-          "team1": null,
-          "team2": null,
-          "score1": null,
-          "score2": null,
-          "penalties1": null,
-          "penalties2": null,
-          "winner": null,
-          "played": false
-        },
-        {
-          "id": "KO-9",
-          "team1": null,
-          "team2": null,
-          "score1": null,
-          "score2": null,
-          "penalties1": null,
-          "penalties2": null,
-          "winner": null,
-          "played": false
-        },
-        {
-          "id": "KO-10",
-          "team1": null,
-          "team2": null,
-          "score1": null,
-          "score2": null,
-          "penalties1": null,
-          "penalties2": null,
-          "winner": null,
-          "played": false
-        },
-        {
-          "id": "KO-11",
-          "team1": null,
-          "team2": null,
-          "score1": null,
-          "score2": null,
-          "penalties1": null,
-          "penalties2": null,
-          "winner": null,
-          "played": false
-        },
-        {
-          "id": "KO-12",
-          "team1": null,
-          "team2": null,
-          "score1": null,
-          "score2": null,
-          "penalties1": null,
-          "penalties2": null,
-          "winner": null,
-          "played": false
-        },
-        {
-          "id": "KO-13",
-          "team1": null,
-          "team2": null,
-          "score1": null,
-          "score2": null,
-          "penalties1": null,
-          "penalties2": null,
-          "winner": null,
-          "played": false
-        },
-        {
-          "id": "KO-14",
-          "team1": null,
-          "team2": null,
-          "score1": null,
-          "score2": null,
-          "penalties1": null,
-          "penalties2": null,
-          "winner": null,
-          "played": false
-        },
-        {
-          "id": "KO-15",
-          "team1": null,
-          "team2": null,
-          "score1": null,
-          "score2": null,
-          "penalties1": null,
-          "penalties2": null,
-          "winner": null,
-          "played": false
-        },
-        {
-          "id": "KO-16",
-          "team1": null,
-          "team2": null,
-          "score1": null,
-          "score2": null,
-          "penalties1": null,
-          "penalties2": null,
-          "winner": null,
-          "played": false
-        }
-      ]
-    },
-    "round_of_16": {
-      "matches": [
-        {
-          "id": "KO-1",
-          "team1": null,
-          "team2": null,
-          "score1": null,
-          "score2": null,
-          "penalties1": null,
-          "penalties2": null,
-          "winner": null,
-          "played": false
-        },
-        {
-          "id": "KO-2",
-          "team1": null,
-          "team2": null,
-          "score1": null,
-          "score2": null,
-          "penalties1": null,
-          "penalties2": null,
-          "winner": null,
-          "played": false
-        },
-        {
-          "id": "KO-3",
-          "team1": null,
-          "team2": null,
-          "score1": null,
-          "score2": null,
-          "penalties1": null,
-          "penalties2": null,
-          "winner": null,
-          "played": false
-        },
-        {
-          "id": "KO-4",
-          "team1": null,
-          "team2": null,
-          "score1": null,
-          "score2": null,
-          "penalties1": null,
-          "penalties2": null,
-          "winner": null,
-          "played": false
-        },
-        {
-          "id": "KO-5",
-          "team1": null,
-          "team2": null,
-          "score1": null,
-          "score2": null,
-          "penalties1": null,
-          "penalties2": null,
-          "winner": null,
-          "played": false
-        },
-        {
-          "id": "KO-6",
-          "team1": null,
-          "team2": null,
-          "score1": null,
-          "score2": null,
-          "penalties1": null,
-          "penalties2": null,
-          "winner": null,
-          "played": false
-        },
-        {
-          "id": "KO-7",
-          "team1": null,
-          "team2": null,
-          "score1": null,
-          "score2": null,
-          "penalties1": null,
-          "penalties2": null,
-          "winner": null,
-          "played": false
-        },
-        {
-          "id": "KO-8",
-          "team1": null,
-          "team2": null,
-          "score1": null,
-          "score2": null,
-          "penalties1": null,
-          "penalties2": null,
-          "winner": null,
-          "played": false
-        }
-      ]
-    },
-    "quarter_finals": {
-      "matches": [
-        {
-          "id": "KO-1",
-          "team1": null,
-          "team2": null,
-          "score1": null,
-          "score2": null,
-          "penalties1": null,
-          "penalties2": null,
-          "winner": null,
-          "played": false
-        },
-        {
-          "id": "KO-2",
-          "team1": null,
-          "team2": null,
-          "score1": null,
-          "score2": null,
-          "penalties1": null,
-          "penalties2": null,
-          "winner": null,
-          "played": false
-        },
-        {
-          "id": "KO-3",
-          "team1": null,
-          "team2": null,
-          "score1": null,
-          "score2": null,
-          "penalties1": null,
-          "penalties2": null,
-          "winner": null,
-          "played": false
-        },
-        {
-          "id": "KO-4",
-          "team1": null,
-          "team2": null,
-          "score1": null,
-          "score2": null,
-          "penalties1": null,
-          "penalties2": null,
-          "winner": null,
-          "played": false
-        }
-      ]
-    },
-    "semi_finals": {
-      "matches": [
-        {
-          "id": "KO-1",
-          "team1": null,
-          "team2": null,
-          "score1": null,
-          "score2": null,
-          "penalties1": null,
-          "penalties2": null,
-          "winner": null,
-          "played": false
-        },
-        {
-          "id": "KO-2",
-          "team1": null,
-          "team2": null,
-          "score1": null,
-          "score2": null,
-          "penalties1": null,
-          "penalties2": null,
-          "winner": null,
-          "played": false
-        }
-      ]
-    },
-    "third_place": {
-      "team1": null,
-      "team2": null,
-      "score1": null,
-      "score2": null,
-      "penalties1": null,
-      "penalties2": null,
-      "winner": null,
-      "played": false
-    },
-    "final": {
-      "team1": null,
-      "team2": null,
-      "score1": null,
-      "score2": null,
-      "penalties1": null,
-      "penalties2": null,
-      "winner": null,
-      "played": false
-    }
-  },
-  "knockout_generated": false
+  ]
 }
