@@ -196,6 +196,7 @@ class MundialData:
     def cargar(self):
         config = self._cargar_config()
         resultados = self._cargar_resultados(config)
+        estadisticas = self._cargar_estadisticas()
 
         self.data = {
             "groups": config.get("groups", deepcopy(GRUPOS_2026)),
@@ -205,17 +206,35 @@ class MundialData:
         }
 
         partidos_res = resultados.get("partidos", {})
+        stats_res = estadisticas.get("partidos", {})
         config_matches = config.get("matches", [])
         for m in config_matches:
             partido = {k: m[k] for k in _CAMPOS_CONFIG if k in m}
             partido.update(_DEFAULTS_RESULTADO.copy())
             mid = str(m.get("id", ""))
             if mid in partidos_res:
-                partido.update(partidos_res[mid])
+                partido.update({k: v for k, v in partidos_res[mid].items() if k in _CAMPOS_RESULTADO})
+            if mid in stats_res:
+                partido.update({k: v for k, v in stats_res[mid].items() if k in _CAMPOS_ESTADISTICAS})
             self.data["matches"].append(partido)
 
-        # Limpia formato viejo de mundial.json si aún tiene campos de resultado
-        if config_matches and any(k in config_matches[0] for k in _CAMPOS_RESULTADO):
+        # Migración: si resultados.json viejo tiene fulltime1 o goles, los mueve
+        needs_save = False
+        for m in self.data["matches"]:
+            mid = str(m.get("id", ""))
+            old = partidos_res.get(mid, {})
+            if "fulltime1" in old and m.get("score1") is None:
+                m["score1"] = old["fulltime1"]
+                m["score2"] = old["fulltime2"]
+                m["played"] = old.get("played", False)
+                needs_save = True
+            if "goles" in old and not m.get("goles"):
+                m["goles"] = old["goles"]
+                needs_save = True
+            if "estadisticas_colectivas" in old and not m.get("estadisticas_colectivas"):
+                m["estadisticas_colectivas"] = old["estadisticas_colectivas"]
+                needs_save = True
+        if needs_save:
             self.guardar()
 
     def _cargar_config(self):
@@ -230,6 +249,15 @@ class MundialData:
         with open(DATA_FILE, "w", encoding="utf-8") as f:
             json.dump({"groups": cfg["groups"], "matches": [{k: m[k] for k in _CAMPOS_CONFIG if k in m} for m in cfg["matches"]]}, f, indent=2, ensure_ascii=False)
         return cfg
+
+    def _cargar_estadisticas(self):
+        if os.path.exists(STATS_FILE):
+            try:
+                with open(STATS_FILE, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except json.JSONDecodeError:
+                pass
+        return {"partidos": {}}
 
     def _cargar_resultados(self, config):
         if os.path.exists(RESULTS_FILE):
