@@ -240,9 +240,10 @@ class MundialData:
                 pass
 
         # Migración desde formato antiguo (mundial.json con scores/knockout mezclados)
+        _LEGACY_RESULT_FIELDS = ("halftime1", "halftime2", "fulltime1", "fulltime2", "played", "goles", "estadisticas_colectivas")
         partidos = {}
         for m in config.get("matches", []):
-            resultado = {k: m[k] for k in _CAMPOS_RESULTADO if k in m}
+            resultado = {k: m[k] for k in _LEGACY_RESULT_FIELDS if k in m}
             if resultado.get("played") or resultado.get("fulltime1") is not None:
                 partidos[str(m["id"])] = resultado
 
@@ -269,7 +270,7 @@ class MundialData:
 
         partidos = {}
         for m in self.data["matches"]:
-            if m.get("played") or m.get("fulltime1") is not None:
+            if m.get("played") or m.get("score1") is not None:
                 partidos[str(m["id"])] = {k: m[k] for k in _CAMPOS_RESULTADO if k in m}
 
         resultados = {
