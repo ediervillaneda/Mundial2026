@@ -52,18 +52,17 @@
                 {% set parts = p.date.split('-') if p.date else [] %}
                 <div class="match-card {% if p.played %}played{% endif %}" data-id="{{ p.id }}" data-date="{{ p.date }}" data-time="{{ p.time }}" data-jugado="{{ p.played|lower }}">
                     <span class="match-team">{{ p.team1 | flag }}</span>
-                    <span class="match-score" onclick="activarEdicionMarcadorGD({{ p.id }})">
-                        {% if p.played %}
-                        <strong>{{ p.fulltime1 }} – {{ p.fulltime2 }}</strong>
-                        {% else %}
-                        <span class="vs-text">vs</span>
-                        {% endif %}
-                    </span>
-                    <span class="match-team match-team-right">{{ p.team2 | flag_r }}</span>
-                    <div class="match-meta">
-                        {% if parts %}{{ parts[2] }}/{{ parts[1] }}{% endif %}
-                        {% if p.time %} · {{ p.time }}{% endif %}
+                    <div class="match-score-wrap">
+                        <span class="match-score" onclick="activarEdicionMarcadorGD({{ p.id }})">
+                            {% if p.played %}
+                            <strong>{{ p.fulltime1 }} – {{ p.fulltime2 }}</strong>
+                            {% else %}
+                            <span class="vs-text">vs</span>
+                            {% endif %}
+                        </span>
+                        <span class="match-meta">{% if parts %}{{ parts[2] }}/{{ parts[1] }}{% endif %}{% if p.time %} · {{ p.time }}{% endif %}</span>
                     </div>
+                    <span class="match-team match-team-right">{{ p.team2 | flag_r }}</span>
                     {% if p.played %}
                     <button class="match-del-btn" onclick="borrarMarcadorGD({{ p.id }})" title="Borrar marcador">🗑</button>
                     {% else %}
@@ -87,7 +86,7 @@
 
 .match-card {
     display: grid;
-    grid-template-columns: 1fr 90px 1fr 72px 28px;
+    grid-template-columns: 1fr 90px 1fr 28px;
     align-items: center;
     gap: 0.5rem;
     background: var(--card);
@@ -107,10 +106,11 @@
 
 .match-team { font-size: 0.88rem; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .match-team-right { text-align: right; }
-.match-score { text-align: center; font-size: 1.05rem; font-weight: 700; background: var(--bg2); border-radius: 6px; padding: 0.28rem 0.4rem; cursor: pointer; }
+.match-score-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.18rem; }
+.match-score { text-align: center; font-size: 1.05rem; font-weight: 700; background: var(--bg2); border-radius: 6px; padding: 0.28rem 0.5rem; cursor: pointer; }
 .match-score:hover { opacity: 0.8; }
 .match-score strong { letter-spacing: 0.05em; }
-.match-meta { font-size: 0.75rem; color: var(--text-muted); text-align: center; }
+.match-meta { font-size: 0.68rem; color: var(--text-muted); text-align: center; white-space: nowrap; }
 .match-del-btn { background: none; border: none; cursor: pointer; font-size: 0.85rem; color: var(--text-muted); padding: 0; text-align: right; display: block; width: 100%; }
 .match-del-btn:hover { color: var(--accent); }
 </style>

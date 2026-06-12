@@ -37,16 +37,18 @@
             <div class="partido-row" data-grupo="{{ p.group }}" data-jugado="{{ p.played|lower }}" data-date="{{ p.date }}" data-time="{{ p.time }}">
                 <div class="partido-grupo">{{ p.group }}</div>
                 <span class="partido-equipo">{{ p.team1 | flag }}</span>
-                <span class="partido-marcador" onclick="activarEdicionMarcador({{ p.id }})">
-                    {% if p.played %}
-                    <strong>{{ p.fulltime1 }} – {{ p.fulltime2 }}</strong>
-                    {% if p.halftime1 is not none %}<small>({{ p.halftime1 }}-{{ p.halftime2 }})</small>{% endif %}
-                    {% else %}
-                    <span class="vs-text">vs</span>
-                    {% endif %}
-                </span>
+                <div class="partido-score-wrap">
+                    <span class="partido-marcador" onclick="activarEdicionMarcador({{ p.id }})">
+                        {% if p.played %}
+                        <strong>{{ p.fulltime1 }} – {{ p.fulltime2 }}</strong>
+                        {% if p.halftime1 is not none %}<small>({{ p.halftime1 }}-{{ p.halftime2 }})</small>{% endif %}
+                        {% else %}
+                        <span class="vs-text">vs</span>
+                        {% endif %}
+                    </span>
+                    {% if p.time %}<div class="partido-hora">{{ p.time }}</div>{% endif %}
+                </div>
                 <span class="partido-equipo partido-equipo-right">{{ p.team2 | flag_r }}</span>
-                <div class="partido-hora">{% if p.time %}{{ p.time }}{% endif %}</div>
                 <div class="partido-acciones">
                     <button class="btn-small btn-danger" onclick="eliminarPartido({{ p.id }})">🗑</button>
                 </div>
