@@ -298,18 +298,27 @@ class MundialData:
         with open(DATA_FILE, "w", encoding="utf-8") as f:
             json.dump(config, f, indent=2, ensure_ascii=False)
 
-        partidos = {}
+        partidos_res = {}
         for m in self.data["matches"]:
             if m.get("played") or m.get("score1") is not None:
-                partidos[str(m["id"])] = {k: m[k] for k in _CAMPOS_RESULTADO if k in m}
+                partidos_res[str(m["id"])] = {k: m[k] for k in _CAMPOS_RESULTADO if k in m}
 
         resultados = {
-            "partidos": partidos,
+            "partidos": partidos_res,
             "knockout": self.data["knockout"],
             "knockout_generated": self.data["knockout_generated"],
         }
         with open(RESULTS_FILE, "w", encoding="utf-8") as f:
             json.dump(resultados, f, indent=2, ensure_ascii=False)
+
+        partidos_stats = {}
+        for m in self.data["matches"]:
+            entry = {k: m[k] for k in _CAMPOS_ESTADISTICAS if k in m}
+            if entry:
+                partidos_stats[str(m["id"])] = entry
+
+        with open(STATS_FILE, "w", encoding="utf-8") as f:
+            json.dump({"partidos": partidos_stats}, f, indent=2, ensure_ascii=False)
 
     def get_grupos(self):
         return self.data["groups"]
