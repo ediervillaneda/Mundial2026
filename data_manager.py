@@ -613,7 +613,12 @@ class MundialData:
         self.guardar()
 
     def reiniciar(self):
+        estadisticas = self._cargar_estadisticas()
         self.data = crear_estructura_inicial()
+        for m in self.data["matches"]:
+            mid = str(m["id"])
+            if mid in estadisticas.get("partidos", {}):
+                m.update({k: v for k, v in estadisticas["partidos"][mid].items() if k in _CAMPOS_ESTADISTICAS})
         self.guardar()
 
     def get_estadisticas(self):
