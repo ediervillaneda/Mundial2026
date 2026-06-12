@@ -300,12 +300,12 @@ class MundialData:
 
         partidos_res = {}
         for m in self.data["matches"]:
-            if m.get("played") or m.get("score1") is not None:
+            if m.get("played") or (m.get("score1") is not None and m.get("score2") is not None):
                 partidos_res[str(m["id"])] = {k: m[k] for k in _CAMPOS_RESULTADO if k in m}
 
         resultados = {
             "partidos": partidos_res,
-            "knockout": self.data["knockout"],
+            "knockout": deepcopy(self.data["knockout"]),
             "knockout_generated": self.data["knockout_generated"],
         }
         with open(RESULTS_FILE, "w", encoding="utf-8") as f:
@@ -348,8 +348,8 @@ class MundialData:
             datos.pop("time", None)
             partido.update(datos)
             if (
-                partido.get("fulltime1") is not None
-                and partido.get("fulltime2") is not None
+                partido.get("score1") is not None
+                and partido.get("score2") is not None
             ):
                 partido["played"] = True
             else:
@@ -383,7 +383,7 @@ class MundialData:
             if not p["played"]:
                 continue
             t1, t2 = p["team1"], p["team2"]
-            g1, g2 = p["fulltime1"], p["fulltime2"]
+            g1, g2 = p["score1"], p["score2"]
             if t1 not in tabla or t2 not in tabla:
                 continue
             tabla[t1]["pj"] += 1
@@ -449,7 +449,7 @@ class MundialData:
                 continue
             t1, t2 = p["team1"], p["team2"]
             if t1 in nombres and t2 in nombres:
-                g1, g2 = p["fulltime1"], p["fulltime2"]
+                g1, g2 = p["score1"], p["score2"]
                 h2h[t1]["gf"] += g1
                 h2h[t1]["gd"] += g1 - g2
                 h2h[t2]["gf"] += g2
@@ -621,7 +621,7 @@ class MundialData:
         total_partidos = len(self.data["matches"])
         jugados = sum(1 for m in self.data["matches"] if m["played"])
         goles = sum(
-            (m["fulltime1"] or 0) + (m["fulltime2"] or 0)
+            (m["score1"] or 0) + (m["score2"] or 0)
             for m in self.data["matches"]
             if m["played"]
         )
@@ -655,7 +655,7 @@ class MundialData:
         equipos = {}
         for m in partidos_jugados:
             t1, t2 = m["team1"], m["team2"]
-            g1, g2 = m["fulltime1"], m["fulltime2"]
+            g1, g2 = m["score1"], m["score2"]
             for eq, gf, gc in [(t1, g1, g2), (t2, g2, g1)]:
                 if eq not in equipos:
                     equipos[eq] = {"gf": 0, "gc": 0, "gd": 0, "pj": 0, "pg": 0, "pe": 0, "pp": 0}
@@ -701,7 +701,7 @@ class MundialData:
 
         mejores_partidos = sorted(
             partidos_jugados,
-            key=lambda m: (m["fulltime1"] + m["fulltime2"]),
+            key=lambda m: (m["score1"] + m["score2"]),
             reverse=True,
         )[:5]
 
@@ -711,7 +711,7 @@ class MundialData:
         ]
 
         total_goles = sum(
-            (m["fulltime1"] or 0) + (m["fulltime2"] or 0) for m in partidos_jugados
+            (m["score1"] or 0) + (m["score2"] or 0) for m in partidos_jugados
         )
 
         return {
