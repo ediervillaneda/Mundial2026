@@ -212,6 +212,16 @@
             </select>
         </div>
 
+        <div id="bloque-prompt-ia" style="display:none;margin-bottom:1rem;border:1px solid rgba(240,180,41,0.2);border-radius:8px;overflow:hidden">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0.75rem;background:rgba(240,180,41,0.06);cursor:pointer" onclick="togglePromptIA()">
+                <span style="font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--accent2)">▶ Prompt para IA</span>
+                <button class="btn-tiny" onclick="event.stopPropagation();copiarPrompt()" id="btn-copiar-prompt">Copiar</button>
+            </div>
+            <div id="cuerpo-prompt-ia" style="display:none;padding:0.75rem">
+                <div id="texto-prompt-ia" style="background:var(--bg);border-radius:6px;padding:0.75rem;font-size:0.78rem;color:var(--text-muted);line-height:1.6;font-family:monospace;white-space:pre-wrap"></div>
+            </div>
+        </div>
+
         <div class="form-group" style="margin-bottom:1rem">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.3rem">
                 <label style="margin:0">JSON de estadísticas</label>
@@ -345,7 +355,57 @@ async function guardarStats() {
         showMsg(msg, json.error || 'Error al guardar.', 'err');
     }
 }
+function parsearEquipos(textoOpcion) {
+    const partes = textoOpcion.split('·');
+    if (partes.length < 2) return ['Equipo A', 'Equipo B'];
+    const info = partes[1].trim();
+    const match = info.match(/^(.+?)\s+\d+[–\-]\d+\s+(.+)$/);
+    return match ? [match[1].trim(), match[2].trim()] : ['Equipo A', 'Equipo B'];
+}
+
 function cargarEjemplo() {
+    const sel = document.getElementById('sel-partido');
+    const opcion = sel.options[sel.selectedIndex];
+    const textoPartido = sel.value ? opcion.text : 'Grupo A · Equipo A 0–0 Equipo B';
+
+    const partes = textoPartido.split('·').map(s => s.trim());
+    const infoPartido = partes.length > 1 ? partes[1] : textoPartido;
+    const [t1, t2] = parsearEquipos(textoPartido);
+
+    const prompt = `Tengo un partido de fútbol del Mundial 2026: ${infoPartido}.
+
+Dame las estadísticas del partido en el siguiente JSON exacto.
+Completa SOLO con datos reales. Si no tienes un dato, usa null.
+
+IMPORTANTE — usa EXACTAMENTE estos nombres como claves (sin traducir, sin prefijos como "Selección de fútbol de"):
+  equipo1 = "${t1}"
+  equipo2 = "${t2}"
+
+{
+  "goles": [
+    { "minuto": <número>, "equipo": "${t1}", "autor": "<Nombre Apellido>" }
+  ],
+  "estadisticas_colectivas": {
+    "posicion_balon":     { "${t1}": "<XX%>", "${t2}": "<XX%>" },
+    "goles_esperados_xg": { "${t1}": <número>, "${t2}": <número> },
+    "remates_totales":    { "${t1}": <número>, "${t2}": <número> },
+    "remates_al_arco":    { "${t1}": <número>, "${t2}": <número> },
+    "pases":              { "${t1}": { "completados": <número>, "precision": "<XX%>" },
+                            "${t2}": { "completados": <número>, "precision": "<XX%>" } },
+    "tiros_de_esquina":   { "${t1}": <número>, "${t2}": <número> },
+    "faltas_cometidas":   { "${t1}": <número>, "${t2}": <número> },
+    "tarjetas_amarillas": { "${t1}": <número>, "${t2}": <número> },
+    "tarjetas_rojas":     { "${t1}": <número>, "${t2}": <número> }
+  }
+}
+
+Si no tienes los datos a mano, búscalos en internet antes de responder (ESPN, FIFA, Sofascore, WhoScored o cualquier fuente confiable del partido).
+
+Responde SOLO con el JSON, sin texto adicional.`;
+
+    document.getElementById('texto-prompt-ia').textContent = prompt;
+    document.getElementById('bloque-prompt-ia').style.display = 'block';
+
     const ejemplo = {
         "goles": [
             {"minuto": 15, "equipo": "Equipo A", "autor": "Jugador Uno"},
@@ -368,6 +428,21 @@ function cargarEjemplo() {
         }
     };
     document.getElementById('stats-json').value = JSON.stringify(ejemplo, null, 2);
+}
+function togglePromptIA() {
+    const cuerpo = document.getElementById('cuerpo-prompt-ia');
+    const header = cuerpo.previousElementSibling.querySelector('span');
+    const abierto = cuerpo.style.display !== 'none';
+    cuerpo.style.display = abierto ? 'none' : 'block';
+    header.textContent = (abierto ? '▶' : '▼') + ' Prompt para IA';
+}
+function copiarPrompt() {
+    const texto = document.getElementById('texto-prompt-ia').textContent;
+    navigator.clipboard.writeText(texto).then(() => {
+        const btn = document.getElementById('btn-copiar-prompt');
+        btn.textContent = 'Copiado!';
+        setTimeout(() => btn.textContent = 'Copiar', 2000);
+    });
 }
 function showMsg(el, text, type) {
     el.style.display = 'block';
