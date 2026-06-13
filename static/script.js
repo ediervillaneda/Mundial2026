@@ -91,7 +91,7 @@ function configurarAutoSave(id) {
                 const s2 = parseInt(document.getElementById(`inline-s2-${id}`)?.value) || 0;
                 fetchJSON(`/api/partido/${id}/actualizar`, {
                     method: 'POST',
-                    body: JSON.stringify({ fulltime1: s1, fulltime2: s2 }),
+                    body: JSON.stringify({ score1: s1, score2: s2 }),
                 }).then(() => location.reload()).catch(err => {
                     alert('Error al guardar: ' + err.message);
                     guardando = false;
@@ -127,7 +127,7 @@ async function borrarMarcadorGD(id) {
     if (!confirm('¿Borrar marcador de este partido?')) return;
     await fetchJSON(`/api/partido/${id}/actualizar`, {
         method: 'POST',
-        body: JSON.stringify({ fulltime1: null, fulltime2: null, halftime1: null, halftime2: null }),
+        body: JSON.stringify({ score1: null, score2: null }),
     });
     location.reload();
 }

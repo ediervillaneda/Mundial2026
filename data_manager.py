@@ -13,6 +13,7 @@ def _base_dir():
 
 DATA_FILE = os.path.join(_base_dir(), "data", "mundial.json")
 RESULTS_FILE = os.path.join(_base_dir(), "data", "resultados.json")
+STATS_FILE = os.path.join(_base_dir(), "data", "estadisticas.json")
 
 BANDERAS = {
     "México": "mx", "Sudáfrica": "za", "Corea del Sur": "kr", "República Checa": "cz",
@@ -80,8 +81,9 @@ IDX_RONDA = {
 }
 
 _CAMPOS_CONFIG = ("id", "group", "team1", "team2", "date", "time")
-_CAMPOS_RESULTADO = ("halftime1", "halftime2", "fulltime1", "fulltime2", "played", "goles", "estadisticas_colectivas")
-_DEFAULTS_RESULTADO = {"halftime1": None, "halftime2": None, "fulltime1": None, "fulltime2": None, "played": False}
+_CAMPOS_RESULTADO = ("score1", "score2", "played")
+_CAMPOS_ESTADISTICAS = ("goles", "estadisticas_colectivas")
+_DEFAULTS_RESULTADO = {"score1": None, "score2": None, "played": False}
 
 
 def _crear_knockout_vacio():
@@ -147,10 +149,8 @@ def _generar_partidos_grupos_iniciales():
                         "team2": equipos[j],
                         "date": fecha,
                         "time": hora,
-                        "halftime1": None,
-                        "halftime2": None,
-                        "fulltime1": None,
-                        "fulltime2": None,
+                        "score1": None,
+                        "score2": None,
                         "played": False,
                     }
                 )
@@ -196,6 +196,7 @@ class MundialData:
     def cargar(self):
         config = self._cargar_config()
         resultados = self._cargar_resultados(config)
+        estadisticas = self._cargar_estadisticas()
 
         self.data = {
             "groups": config.get("groups", deepcopy(GRUPOS_2026)),
@@ -205,17 +206,35 @@ class MundialData:
         }
 
         partidos_res = resultados.get("partidos", {})
+        stats_res = estadisticas.get("partidos", {})
         config_matches = config.get("matches", [])
         for m in config_matches:
             partido = {k: m[k] for k in _CAMPOS_CONFIG if k in m}
             partido.update(_DEFAULTS_RESULTADO.copy())
             mid = str(m.get("id", ""))
             if mid in partidos_res:
-                partido.update(partidos_res[mid])
+                partido.update({k: v for k, v in partidos_res[mid].items() if k in _CAMPOS_RESULTADO})
+            if mid in stats_res:
+                partido.update({k: v for k, v in stats_res[mid].items() if k in _CAMPOS_ESTADISTICAS})
             self.data["matches"].append(partido)
 
-        # Limpia formato viejo de mundial.json si aún tiene campos de resultado
-        if config_matches and any(k in config_matches[0] for k in _CAMPOS_RESULTADO):
+        # Migración: si resultados.json viejo tiene fulltime1 o goles, los mueve
+        needs_save = False
+        for m in self.data["matches"]:
+            mid = str(m.get("id", ""))
+            old = partidos_res.get(mid, {})
+            if "fulltime1" in old and "fulltime2" in old and m.get("score1") is None:
+                m["score1"] = old["fulltime1"]
+                m["score2"] = old["fulltime2"]
+                m["played"] = old.get("played", False)
+                needs_save = True
+            if "goles" in old and not m.get("goles"):
+                m["goles"] = old["goles"]
+                needs_save = True
+            if "estadisticas_colectivas" in old and not m.get("estadisticas_colectivas"):
+                m["estadisticas_colectivas"] = old["estadisticas_colectivas"]
+                needs_save = True
+        if needs_save:
             self.guardar()
 
     def _cargar_config(self):
@@ -231,6 +250,17 @@ class MundialData:
             json.dump({"groups": cfg["groups"], "matches": [{k: m[k] for k in _CAMPOS_CONFIG if k in m} for m in cfg["matches"]]}, f, indent=2, ensure_ascii=False)
         return cfg
 
+    def _cargar_estadisticas(self):
+        if os.path.exists(STATS_FILE):
+            try:
+                with open(STATS_FILE, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                if isinstance(data, dict):
+                    return data
+            except json.JSONDecodeError:
+                pass
+        return {"partidos": {}}
+
     def _cargar_resultados(self, config):
         if os.path.exists(RESULTS_FILE):
             try:
@@ -240,9 +270,10 @@ class MundialData:
                 pass
 
         # Migración desde formato antiguo (mundial.json con scores/knockout mezclados)
+        _LEGACY_RESULT_FIELDS = ("halftime1", "halftime2", "fulltime1", "fulltime2", "played", "goles", "estadisticas_colectivas")
         partidos = {}
         for m in config.get("matches", []):
-            resultado = {k: m[k] for k in _CAMPOS_RESULTADO if k in m}
+            resultado = {k: m[k] for k in _LEGACY_RESULT_FIELDS if k in m}
             if resultado.get("played") or resultado.get("fulltime1") is not None:
                 partidos[str(m["id"])] = resultado
 
@@ -267,18 +298,27 @@ class MundialData:
         with open(DATA_FILE, "w", encoding="utf-8") as f:
             json.dump(config, f, indent=2, ensure_ascii=False)
 
-        partidos = {}
+        partidos_res = {}
         for m in self.data["matches"]:
-            if m.get("played") or m.get("fulltime1") is not None:
-                partidos[str(m["id"])] = {k: m[k] for k in _CAMPOS_RESULTADO if k in m}
+            if m.get("played") or (m.get("score1") is not None and m.get("score2") is not None):
+                partidos_res[str(m["id"])] = {k: m[k] for k in _CAMPOS_RESULTADO if k in m}
 
         resultados = {
-            "partidos": partidos,
-            "knockout": self.data["knockout"],
+            "partidos": partidos_res,
+            "knockout": deepcopy(self.data["knockout"]),
             "knockout_generated": self.data["knockout_generated"],
         }
         with open(RESULTS_FILE, "w", encoding="utf-8") as f:
             json.dump(resultados, f, indent=2, ensure_ascii=False)
+
+        partidos_stats = {}
+        for m in self.data["matches"]:
+            entry = {k: m[k] for k in _CAMPOS_ESTADISTICAS if k in m}
+            if entry:
+                partidos_stats[str(m["id"])] = entry
+
+        with open(STATS_FILE, "w", encoding="utf-8") as f:
+            json.dump({"partidos": partidos_stats}, f, indent=2, ensure_ascii=False)
 
     def get_grupos(self):
         return self.data["groups"]
@@ -308,8 +348,8 @@ class MundialData:
             datos.pop("time", None)
             partido.update(datos)
             if (
-                partido.get("fulltime1") is not None
-                and partido.get("fulltime2") is not None
+                partido.get("score1") is not None
+                and partido.get("score2") is not None
             ):
                 partido["played"] = True
             else:
@@ -343,7 +383,7 @@ class MundialData:
             if not p["played"]:
                 continue
             t1, t2 = p["team1"], p["team2"]
-            g1, g2 = p["fulltime1"], p["fulltime2"]
+            g1, g2 = p["score1"], p["score2"]
             if t1 not in tabla or t2 not in tabla:
                 continue
             tabla[t1]["pj"] += 1
@@ -409,7 +449,7 @@ class MundialData:
                 continue
             t1, t2 = p["team1"], p["team2"]
             if t1 in nombres and t2 in nombres:
-                g1, g2 = p["fulltime1"], p["fulltime2"]
+                g1, g2 = p["score1"], p["score2"]
                 h2h[t1]["gf"] += g1
                 h2h[t1]["gd"] += g1 - g2
                 h2h[t2]["gf"] += g2
@@ -573,7 +613,12 @@ class MundialData:
         self.guardar()
 
     def reiniciar(self):
+        estadisticas = self._cargar_estadisticas()
         self.data = crear_estructura_inicial()
+        for m in self.data["matches"]:
+            mid = str(m["id"])
+            if mid in estadisticas.get("partidos", {}):
+                m.update({k: v for k, v in estadisticas["partidos"][mid].items() if k in _CAMPOS_ESTADISTICAS})
         self.guardar()
 
     def get_estadisticas(self):
@@ -581,7 +626,7 @@ class MundialData:
         total_partidos = len(self.data["matches"])
         jugados = sum(1 for m in self.data["matches"] if m["played"])
         goles = sum(
-            (m["fulltime1"] or 0) + (m["fulltime2"] or 0)
+            (m["score1"] or 0) + (m["score2"] or 0)
             for m in self.data["matches"]
             if m["played"]
         )
@@ -615,7 +660,7 @@ class MundialData:
         equipos = {}
         for m in partidos_jugados:
             t1, t2 = m["team1"], m["team2"]
-            g1, g2 = m["fulltime1"], m["fulltime2"]
+            g1, g2 = m["score1"], m["score2"]
             for eq, gf, gc in [(t1, g1, g2), (t2, g2, g1)]:
                 if eq not in equipos:
                     equipos[eq] = {"gf": 0, "gc": 0, "gd": 0, "pj": 0, "pg": 0, "pe": 0, "pp": 0}
@@ -661,7 +706,7 @@ class MundialData:
 
         mejores_partidos = sorted(
             partidos_jugados,
-            key=lambda m: (m["fulltime1"] + m["fulltime2"]),
+            key=lambda m: (m["score1"] + m["score2"]),
             reverse=True,
         )[:5]
 
@@ -671,7 +716,7 @@ class MundialData:
         ]
 
         total_goles = sum(
-            (m["fulltime1"] or 0) + (m["fulltime2"] or 0) for m in partidos_jugados
+            (m["score1"] or 0) + (m["score2"] or 0) for m in partidos_jugados
         )
 
         return {

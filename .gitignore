@@ -8,3 +8,4 @@ build/
 nul
 .claude/settings.local.json
 data/resultados.json
+data/estadisticas.json
