@@ -30,6 +30,26 @@ REQUIREMENTS = [
 ]
 
 
+def _backup_data():
+    dist_data = os.path.join(DIST_DIR, APP_NAME, "data")
+    if os.path.exists(dist_data):
+        backup = dist_data + ".bak"
+        if os.path.exists(backup):
+            shutil.rmtree(backup)
+        shutil.copytree(dist_data, backup)
+        return backup
+    return None
+
+
+def _restore_data(backup):
+    if backup and os.path.exists(backup):
+        dest = os.path.join(DIST_DIR, APP_NAME, "data")
+        if os.path.exists(dest):
+            shutil.rmtree(dest)
+        shutil.move(backup, dest)
+        print("✓ Datos runtime restaurados")
+
+
 def clean():
     for d in [DIST_DIR, BUILD_DIR]:
         if os.path.exists(d):
@@ -107,6 +127,10 @@ def main():
     onefile = "--onefile" in sys.argv
     do_clean = "--clean" in sys.argv
 
+    data_backup = None
+    if not onefile:
+        data_backup = _backup_data()
+
     if do_clean:
         clean()
 
@@ -114,6 +138,8 @@ def main():
         install_deps()
 
     build_exe(onefile=onefile)
+
+    _restore_data(data_backup)
 
     if platform.system() == "Windows" and not onefile:
         print("\n💡 Tip: Para generar un solo .exe (sin carpeta), usa --onefile")
