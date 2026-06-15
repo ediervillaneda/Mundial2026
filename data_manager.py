@@ -530,6 +530,29 @@ class MundialData:
         self.guardar()
         return True
 
+    def get_knockout_live(self):
+        clasificados = self.obtener_clasificados_a_eliminatorias()
+        todos = clasificados["total"]
+
+        todos_ordenados = sorted(
+            todos, key=lambda x: (x["pts"], x["gd"], x["gf"]), reverse=True
+        )
+
+        ko = deepcopy(self.data["knockout"])
+
+        for i in range(16):
+            match = ko["round_of_32"]["matches"][i]
+            if match.get("score1") is None and match.get("score2") is None:
+                match["team1"] = todos_ordenados[i]["team"] if i < len(todos_ordenados) else None
+                idx2 = 31 - i
+                match["team2"] = todos_ordenados[idx2]["team"] if idx2 < len(todos_ordenados) else None
+
+        return {
+            "knockout": ko,
+            "clasificados_count": len(todos_ordenados),
+            "total_requeridos": 32,
+        }
+
     def get_knockout_match(self, ronda, idx):
         if ronda in ("third_place", "final"):
             return self.data["knockout"][ronda]
