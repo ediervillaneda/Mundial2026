@@ -330,6 +330,18 @@ function singleCol(match, ronda, offset, label) {
     </div>`;
 }
 
+// ── Bracket Labels y State ────────────────────────────────────────
+const RONDA_LABELS = {
+    'round_of_32':    '16avos · 29 Jun – 3 Jul',
+    'round_of_16':    'Octavos · 5 – 8 Jul',
+    'quarter_finals': 'Cuartos · 11 – 12 Jul',
+    'semi_finals':    'Semis · 15 – 16 Jul',
+    'final':          'Final · 19 Jul',
+    'third_place':    '3er Puesto · 19 Jul',
+};
+
+let _lastKnockout = null;
+
 function renderBracket(ko) {
     const r32 = ko.round_of_32.matches;
     const r16 = ko.round_of_16.matches;
@@ -337,28 +349,28 @@ function renderBracket(ko) {
     const sf  = ko.semi_finals.matches;
 
     const leftHalf = `<div class="bkt-half bkt-half-l">
-        ${col(r32.slice(0, 8), 'round_of_32', 0, '16avos')}
-        ${col(r16.slice(0, 4), 'round_of_16', 0, 'Octavos')}
-        ${col(qf.slice(0, 2), 'quarter_finals', 0, 'Cuartos')}
-        ${singleCol(sf[0], 'semi_finals', 0, 'Semis')}
+        ${col(r32.slice(0, 8), 'round_of_32', 0, RONDA_LABELS['round_of_32'])}
+        ${col(r16.slice(0, 4), 'round_of_16', 0, RONDA_LABELS['round_of_16'])}
+        ${col(qf.slice(0, 2),  'quarter_finals', 0, RONDA_LABELS['quarter_finals'])}
+        ${singleCol(sf[0], 'semi_finals', 0, RONDA_LABELS['semi_finals'])}
     </div>`;
 
     const center = `<div class="bkt-center">
         <div>
-            <div class="bkt-center-label">Final</div>
+            <div class="bkt-center-label">${RONDA_LABELS['final']}</div>
             ${renderMatch(ko.final, 'final', 0)}
         </div>
         <div>
-            <div class="bkt-center-label">3er Puesto</div>
+            <div class="bkt-center-label">${RONDA_LABELS['third_place']}</div>
             ${renderMatch(ko.third_place, 'third_place', 0)}
         </div>
     </div>`;
 
     const rightHalf = `<div class="bkt-half bkt-half-r">
-        ${singleCol(sf[1], 'semi_finals', 1, 'Semis')}
-        ${col(qf.slice(2, 4), 'quarter_finals', 2, 'Cuartos')}
-        ${col(r16.slice(4, 8), 'round_of_16', 4, 'Octavos')}
-        ${col(r32.slice(8, 16), 'round_of_32', 8, '16avos')}
+        ${singleCol(sf[1], 'semi_finals', 1, RONDA_LABELS['semi_finals'])}
+        ${col(qf.slice(2, 4),  'quarter_finals', 2, RONDA_LABELS['quarter_finals'])}
+        ${col(r16.slice(4, 8), 'round_of_16', 4, RONDA_LABELS['round_of_16'])}
+        ${col(r32.slice(8, 16),'round_of_32', 8, RONDA_LABELS['round_of_32'])}
     </div>`;
 
     return `<div class="bkt-wrapper">${leftHalf}${center}${rightHalf}</div>`;
@@ -366,19 +378,15 @@ function renderBracket(ko) {
 
 async function fetchAndRenderBracket() {
     try {
-        const { knockout, knockout_generated } = await fetchJSON('/api/knockout-data');
+        const { knockout, clasificados_count, total_requeridos } = await fetchJSON('/api/knockout-live');
+        _lastKnockout = knockout;
+
+        const counter = document.getElementById('clasificados-counter');
+        if (counter) counter.textContent = `${clasificados_count} / ${total_requeridos} clasificados`;
+
         const root = document.getElementById('bracket-root');
         if (!root) return;
-
-        const btnGen  = document.getElementById('btn-generar');
-        const btnReg  = document.getElementById('btn-regenerar');
-        const clsSec  = document.getElementById('clasificados-section');
-
-        if (btnGen)  btnGen.style.display  = knockout_generated ? 'none' : '';
-        if (btnReg)  btnReg.style.display  = knockout_generated ? '' : 'none';
-        if (clsSec)  clsSec.style.display  = knockout_generated ? 'none' : '';
-
-        root.innerHTML = knockout_generated ? renderBracket(knockout) : '';
+        root.innerHTML = renderBracket(knockout);
     } catch (err) {
         console.error('fetchAndRenderBracket:', err);
     }
