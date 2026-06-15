@@ -13,6 +13,7 @@ import sys
 import shutil
 import subprocess
 import platform
+import signal
 
 APP_NAME = "Mundial2026"
 MAIN_SCRIPT = "app.py"
@@ -28,6 +29,49 @@ REQUIREMENTS = [
     "flask>=3.0",
     "pyinstaller>=6.0",
 ]
+
+
+def matar_servidor():
+    print("Terminando procesos del servidor anterior...")
+    sistema = platform.system()
+    killed = 0
+    if sistema == "Windows":
+        try:
+            result = subprocess.run(
+                ["tasklist", "/FI", "IMAGENAME eq Mundial2026.exe", "/FO", "CSV", "/NH"],
+                capture_output=True, text=True
+            )
+            for line in result.stdout.strip().splitlines():
+                if "Mundial2026.exe" in line:
+                    pid = line.split(",")[1].strip().strip('"')
+                    subprocess.run(["taskkill", "/F", "/PID", pid], capture_output=True)
+                    killed += 1
+        except Exception:
+            pass
+        try:
+            result = subprocess.run(
+                ["netstat", "-ano", "-p", "TCP"],
+                capture_output=True, text=True
+            )
+            for line in result.stdout.splitlines():
+                if ":2026" in line and "LISTENING" in line:
+                    pid = line.strip().split()[-1]
+                    subprocess.run(["taskkill", "/F", "/PID", pid], capture_output=True)
+                    killed += 1
+        except Exception:
+            pass
+    else:
+        try:
+            result = subprocess.run(["lsof", "-ti", "tcp:2026"], capture_output=True, text=True)
+            for pid in result.stdout.strip().splitlines():
+                os.kill(int(pid), signal.SIGTERM)
+                killed += 1
+        except Exception:
+            pass
+    if killed:
+        print(f"  {killed} proceso(s) terminado(s)")
+    else:
+        print("  Sin procesos activos")
 
 
 def _backup_data():
@@ -126,6 +170,8 @@ def build_exe(onefile=False):
 def main():
     onefile = "--onefile" in sys.argv
     do_clean = "--clean" in sys.argv
+
+    matar_servidor()
 
     data_backup = None
     if not onefile:

@@ -132,22 +132,9 @@ def api_eliminar_partido(match_id):
 @app.route("/eliminatorias")
 def eliminatorias():
     clasificados = data_mgr.obtener_clasificados_a_eliminatorias()
-    ko = data_mgr.data["knockout"]
-    generado = data_mgr.data["knockout_generated"]
     return render_template(
         "eliminatorias.html",
         clasificados=clasificados,
-        knockout=ko,
-        generado=generado,
-        rondas_info=RUTA_ELIMINATORIA,
-        rondas_order=[
-            "round_of_32",
-            "round_of_16",
-            "quarter_finals",
-            "semi_finals",
-            "third_place",
-            "final",
-        ],
     )
 
 
@@ -205,6 +192,11 @@ def api_knockout_data():
         "knockout": data_mgr.data["knockout"],
         "knockout_generated": data_mgr.data["knockout_generated"],
     })
+
+
+@app.route("/api/knockout-live")
+def api_knockout_live():
+    return jsonify(data_mgr.get_knockout_live())
 
 
 @app.route("/estadisticas")

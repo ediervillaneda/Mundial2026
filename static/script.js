@@ -151,21 +151,9 @@ function activarEdicionMarcadorGD(id) {
     document.getElementById(`inline-s1-${id}`)?.focus();
 }
 
-async function generarEliminatorias() {
-    if (!confirm('¿Generar bracket de eliminatorias? Se emparejarán los 32 equipos.')) return;
-    const result = await fetchJSON('/api/eliminatorias/generar', { method: 'POST' });
-    if (result.success) {
-        document.getElementById('clasificados-section')?.style && (document.getElementById('clasificados-section').style.display = 'none');
-        await fetchAndRenderBracket();
-    } else {
-        alert('Error: ' + (result.error || 'No se pudo generar'));
-    }
-}
-
 async function reiniciarEliminatorias() {
-    if (!confirm('¿Reiniciar eliminatorias? Se perderán los resultados actuales.')) return;
+    if (!confirm('¿Reiniciar eliminatorias? Se perderán los resultados KO.')) return;
     await fetchJSON('/api/eliminatorias/reiniciar', { method: 'POST' });
-    document.getElementById('clasificados-section')?.style && (document.getElementById('clasificados-section').style.display = '');
     await fetchAndRenderBracket();
 }
 
@@ -199,7 +187,8 @@ async function guardarKOMatch(ronda, idx) {
     });
 
     if (result.success) {
-        await fetchAndRenderBracket();
+        await fetchAndRenderBracket();   // primero re-render, card destino queda en DOM
+        triggerArriveAnimation(ronda, idx);  // después animar card ya existente
     } else {
         alert('Error al guardar');
     }
@@ -229,38 +218,74 @@ function flagImg(nombre) {
 }
 
 function renderMatch(match, ronda, idx) {
-    const t1 = match.team1 || '—';
-    const t2 = match.team2 || '—';
-    const hasTeams = !!(match.team1 && match.team2);
+    const t1 = match.team1 || null;
+    const t2 = match.team2 || null;
+    const hasTeams = !!(t1 && t2);
     const w = match.winner;
-    const n1 = 'bkt-name' + (match.team1 ? ' assigned' : '') + (w && w === match.team1 ? ' winner' : '');
-    const n2 = 'bkt-name' + (match.team2 ? ' assigned' : '') + (w && w === match.team2 ? ' winner' : '');
-    const s1 = match.score1 !== null && match.score1 !== undefined ? match.score1 : '';
-    const s2 = match.score2 !== null && match.score2 !== undefined ? match.score2 : '';
-    const p1 = match.penalties1 !== null && match.penalties1 !== undefined ? match.penalties1 : '';
-    const p2 = match.penalties2 !== null && match.penalties2 !== undefined ? match.penalties2 : '';
-    const penDisplay = (match.penalties1 !== null && match.penalties1 !== undefined) ? 'flex' : 'none';
     const isFinal = ronda === 'final' || ronda === 'third_place';
     const cardExtra = ronda === 'final' ? 'bkt-final' : ronda === 'third_place' ? 'bkt-third' : '';
-    const dis = hasTeams ? '' : 'disabled';
 
-    return `<div class="bkt-card ${match.played ? 'bkt-played' : ''} ${cardExtra}">
+    // Estado 1: sin equipos (o solo uno)
+    if (!hasTeams) {
+        return `<div class="bkt-card ${cardExtra} bkt-empty" data-ronda="${ronda}" data-idx="${idx}">
+            <div class="bkt-team"><span class="bkt-name">${t1 ? flagImg(t1) : '—'}</span></div>
+            <div class="bkt-team"><span class="bkt-name">${t2 ? flagImg(t2) : '—'}</span></div>
+            <div class="bkt-actions">
+                <button class="btn-tiny" data-action="assign" data-ronda="${ronda}" data-idx="${idx}">👤</button>
+            </div>
+        </div>`;
+    }
+
+    const n1 = 'bkt-name assigned' + (w && w === t1 ? ' winner' : '');
+    const n2 = 'bkt-name assigned' + (w && w === t2 ? ' winner' : '');
+    const row1Extra = (w && w === t1) ? ' winner-row' : '';
+    const row2Extra = (w && w === t2) ? ' winner-row' : '';
+
+    // Estado 3: jugado → score como texto
+    if (match.played) {
+        const s1 = match.score1 ?? '';
+        const s2 = match.score2 ?? '';
+        const p1 = match.penalties1 != null ? ` (${match.penalties1})` : '';
+        const p2 = match.penalties2 != null ? ` (${match.penalties2})` : '';
+        return `<div class="bkt-card bkt-played ${cardExtra}" data-ronda="${ronda}" data-idx="${idx}">
+            <div class="bkt-team${row1Extra}">
+                <span class="${n1}">${flagImg(t1)}</span>
+                <span class="bkt-score-display">${s1}${p1}</span>
+            </div>
+            <div class="bkt-sep-center">—</div>
+            <div class="bkt-team${row2Extra}">
+                <span class="${n2}">${flagImg(t2)}</span>
+                <span class="bkt-score-display">${s2}${p2}</span>
+            </div>
+            <div class="bkt-actions">
+                <button class="btn-tiny" data-action="edit" data-ronda="${ronda}" data-idx="${idx}">✏️</button>
+            </div>
+        </div>`;
+    }
+
+    // Estado 2: con equipos, sin jugar → inputs activos
+    const s1v = match.score1 != null ? match.score1 : '';
+    const s2v = match.score2 != null ? match.score2 : '';
+    const pen1v = match.penalties1 != null ? match.penalties1 : '';
+    const pen2v = match.penalties2 != null ? match.penalties2 : '';
+    const penDisplay = match.penalties1 != null ? 'flex' : 'none';
+    return `<div class="bkt-card ${cardExtra}" data-ronda="${ronda}" data-idx="${idx}">
         <div class="bkt-team">
             <span class="${n1}">${flagImg(t1)}</span>
-            <input type="number" class="bkt-score" id="score-${ronda}-${idx}-1" value="${s1}" min="0" placeholder="0" ${dis}>
+            <input type="number" class="bkt-score" id="score-${ronda}-${idx}-1" value="${s1v}" min="0" placeholder="0">
             <span class="bkt-sep">-</span>
-            <input type="number" class="bkt-score" id="score-${ronda}-${idx}-2" value="${s2}" min="0" placeholder="0" ${dis}>
+            <input type="number" class="bkt-score" id="score-${ronda}-${idx}-2" value="${s2v}" min="0" placeholder="0">
         </div>
         <div class="bkt-team"><span class="${n2}">${flagImg(t2)}</span></div>
         <div class="bkt-penales" id="bkt-pen-${ronda}-${idx}" style="display:${penDisplay}">
             Pen:
-            <input type="number" class="bkt-pen" id="pen-${ronda}-${idx}-1" value="${p1}" min="0" placeholder="-" ${dis}>
+            <input type="number" class="bkt-pen" id="pen-${ronda}-${idx}-1" value="${pen1v}" min="0" placeholder="-">
             <span>-</span>
-            <input type="number" class="bkt-pen" id="pen-${ronda}-${idx}-2" value="${p2}" min="0" placeholder="-" ${dis}>
+            <input type="number" class="bkt-pen" id="pen-${ronda}-${idx}-2" value="${pen2v}" min="0" placeholder="-">
         </div>
         <div class="bkt-actions">
-            ${hasTeams ? `<button class="btn-tiny" data-action="save" data-ronda="${ronda}" data-idx="${idx}">💾</button>` : ''}
-            ${hasTeams && !isFinal ? `<button class="btn-tiny" data-action="toggle-pen" data-ronda="${ronda}" data-idx="${idx}">⚽</button>` : ''}
+            <button class="btn-tiny" data-action="save" data-ronda="${ronda}" data-idx="${idx}">💾</button>
+            ${!isFinal ? `<button class="btn-tiny" data-action="toggle-pen" data-ronda="${ronda}" data-idx="${idx}">⚽</button>` : ''}
             <button class="btn-tiny" data-action="assign" data-ronda="${ronda}" data-idx="${idx}">👤</button>
         </div>
     </div>`;
@@ -294,6 +319,18 @@ function singleCol(match, ronda, offset, label) {
     </div>`;
 }
 
+// ── Bracket Labels y State ────────────────────────────────────────
+const RONDA_LABELS = {
+    'round_of_32':    '16avos · 29 Jun – 3 Jul',
+    'round_of_16':    'Octavos · 5 – 8 Jul',
+    'quarter_finals': 'Cuartos · 11 – 12 Jul',
+    'semi_finals':    'Semis · 15 – 16 Jul',
+    'final':          'Final · 19 Jul',
+    'third_place':    '3er Puesto · 19 Jul',
+};
+
+let _lastKnockout = null;
+
 function renderBracket(ko) {
     const r32 = ko.round_of_32.matches;
     const r16 = ko.round_of_16.matches;
@@ -301,28 +338,28 @@ function renderBracket(ko) {
     const sf  = ko.semi_finals.matches;
 
     const leftHalf = `<div class="bkt-half bkt-half-l">
-        ${col(r32.slice(0, 8), 'round_of_32', 0, '16avos')}
-        ${col(r16.slice(0, 4), 'round_of_16', 0, 'Octavos')}
-        ${col(qf.slice(0, 2), 'quarter_finals', 0, 'Cuartos')}
-        ${singleCol(sf[0], 'semi_finals', 0, 'Semis')}
+        ${col(r32.slice(0, 8), 'round_of_32', 0, RONDA_LABELS['round_of_32'])}
+        ${col(r16.slice(0, 4), 'round_of_16', 0, RONDA_LABELS['round_of_16'])}
+        ${col(qf.slice(0, 2),  'quarter_finals', 0, RONDA_LABELS['quarter_finals'])}
+        ${singleCol(sf[0], 'semi_finals', 0, RONDA_LABELS['semi_finals'])}
     </div>`;
 
     const center = `<div class="bkt-center">
         <div>
-            <div class="bkt-center-label">Final</div>
+            <div class="bkt-center-label">${RONDA_LABELS['final']}</div>
             ${renderMatch(ko.final, 'final', 0)}
         </div>
         <div>
-            <div class="bkt-center-label">3er Puesto</div>
+            <div class="bkt-center-label">${RONDA_LABELS['third_place']}</div>
             ${renderMatch(ko.third_place, 'third_place', 0)}
         </div>
     </div>`;
 
     const rightHalf = `<div class="bkt-half bkt-half-r">
-        ${singleCol(sf[1], 'semi_finals', 1, 'Semis')}
-        ${col(qf.slice(2, 4), 'quarter_finals', 2, 'Cuartos')}
-        ${col(r16.slice(4, 8), 'round_of_16', 4, 'Octavos')}
-        ${col(r32.slice(8, 16), 'round_of_32', 8, '16avos')}
+        ${singleCol(sf[1], 'semi_finals', 1, RONDA_LABELS['semi_finals'])}
+        ${col(qf.slice(2, 4),  'quarter_finals', 2, RONDA_LABELS['quarter_finals'])}
+        ${col(r16.slice(4, 8), 'round_of_16', 4, RONDA_LABELS['round_of_16'])}
+        ${col(r32.slice(8, 16),'round_of_32', 8, RONDA_LABELS['round_of_32'])}
     </div>`;
 
     return `<div class="bkt-wrapper">${leftHalf}${center}${rightHalf}</div>`;
@@ -330,19 +367,15 @@ function renderBracket(ko) {
 
 async function fetchAndRenderBracket() {
     try {
-        const { knockout, knockout_generated } = await fetchJSON('/api/knockout-data');
+        const { knockout, clasificados_count, total_requeridos } = await fetchJSON('/api/knockout-live');
+        _lastKnockout = knockout;
+
+        const counter = document.getElementById('clasificados-counter');
+        if (counter) counter.textContent = `${clasificados_count} / ${total_requeridos} clasificados`;
+
         const root = document.getElementById('bracket-root');
         if (!root) return;
-
-        const btnGen  = document.getElementById('btn-generar');
-        const btnReg  = document.getElementById('btn-regenerar');
-        const clsSec  = document.getElementById('clasificados-section');
-
-        if (btnGen)  btnGen.style.display  = knockout_generated ? 'none' : '';
-        if (btnReg)  btnReg.style.display  = knockout_generated ? '' : 'none';
-        if (clsSec)  clsSec.style.display  = knockout_generated ? 'none' : '';
-
-        root.innerHTML = knockout_generated ? renderBracket(knockout) : '';
+        root.innerHTML = renderBracket(knockout);
     } catch (err) {
         console.error('fetchAndRenderBracket:', err);
     }
@@ -354,24 +387,75 @@ function togglePenalesBkt(ronda, idx) {
     el.style.display = el.style.display === 'none' ? 'flex' : 'none';
 }
 
-function asignarEquipoBkt(ronda, idx) {
+function editKOMatch(ronda, idx) {
+    if (!_lastKnockout) return;
+    const match = (ronda === 'third_place' || ronda === 'final')
+        ? _lastKnockout[ronda]
+        : _lastKnockout[ronda]?.matches?.[idx];
+    if (!match) return;
+    const card = document.querySelector(`.bkt-card[data-ronda="${ronda}"][data-idx="${idx}"]`);
+    if (!card) return;
+    const editHtml = renderMatch({ ...match, played: false }, ronda, idx);
+    card.outerHTML = editHtml;
+}
+
+function triggerArriveAnimation(ronda, idx) {
+    const SIGUIENTE_JS = {
+        'round_of_32':    { ronda: 'round_of_16',    getIdx: i => Math.floor(i / 2) },
+        'round_of_16':    { ronda: 'quarter_finals', getIdx: i => Math.floor(i / 2) },
+        'quarter_finals': { ronda: 'semi_finals',    getIdx: i => Math.floor(i / 2) },
+        'semi_finals':    { ronda: 'final',          getIdx: () => 0 },
+    };
+    const next = SIGUIENTE_JS[ronda];
+    if (!next) return;
+    const nextIdx = next.getIdx(idx);
+    const card = document.querySelector(`.bkt-card[data-ronda="${next.ronda}"][data-idx="${nextIdx}"]`);
+    if (!card) return;
+    card.classList.remove('bkt-arrive');
+    void card.offsetWidth;
+    card.classList.add('bkt-arrive');
+    setTimeout(() => card.classList.remove('bkt-arrive'), 750);
+}
+
+let _assignPending = { ronda: null, idx: null, team: null };
+
+function _renderModalTeams(filtro) {
     const equipos = (window._clasificadosData || []).map(e => e.team);
-    const sel = prompt(`Selecciona equipo (escribe el nombre):\n\n${equipos.map((e, i) => `${i + 1}. ${e}`).join('\n')}`);
-    if (!sel) return;
+    const filtrados = filtro
+        ? equipos.filter(e => e.toLowerCase().includes(filtro.toLowerCase()))
+        : equipos;
+    const list = document.getElementById('bkt-assign-list');
+    if (!list) return;
+    list.innerHTML = filtrados
+        .map(e => `<button class="bkt-assign-item" data-team="${e}">${flagImg(e)} ${e}</button>`)
+        .join('');
+}
 
-    const equipo = equipos.find(e => e.toLowerCase().includes(sel.toLowerCase()));
-    if (!equipo) { alert('Equipo no encontrado.'); return; }
+function asignarEquipoBkt(ronda, idx) {
+    _assignPending = { ronda, idx, team: null };
+    const modal = document.getElementById('bkt-assign-modal');
+    const searchInput = document.getElementById('bkt-assign-search');
+    const confirmDiv = document.getElementById('bkt-assign-confirm');
+    if (searchInput) searchInput.value = '';
+    if (confirmDiv) confirmDiv.style.display = 'none';
+    document.querySelectorAll('.bkt-assign-item').forEach(b => b.classList.remove('selected'));
+    _renderModalTeams('');
+    modal?.showModal();
+}
 
-    const slot = prompt('¿Posición? (team1 o team2)');
-    if (!slot || !['team1', 'team2'].includes(slot)) return;
-
-    fetchJSON('/api/eliminatorias/asignar', {
+async function confirmarAsignacion(slot) {
+    if (!_assignPending.team || !_assignPending.ronda) return;
+    const { ronda, idx, team } = _assignPending;
+    document.getElementById('bkt-assign-modal').close();
+    const d = await fetchJSON('/api/eliminatorias/asignar', {
         method: 'POST',
-        body: JSON.stringify({ ronda, idx, slot, team: equipo }),
-    }).then(d => {
-        if (d.success) fetchAndRenderBracket();
-        else alert('Error: ' + d.error);
+        body: JSON.stringify({ ronda, idx, slot, team }),
     });
+    if (d.success) {
+        await fetchAndRenderBracket();
+    } else {
+        alert('Error: ' + d.error);
+    }
 }
 
 // Event delegation: survives DOM re-renders
@@ -386,8 +470,27 @@ document.addEventListener('DOMContentLoaded', () => {
         const idx = +btn.dataset.idx;
         if (action === 'save')       guardarKOMatch(ronda, idx);
         if (action === 'toggle-pen') togglePenalesBkt(ronda, idx);
+        if (action === 'edit')       editKOMatch(ronda, idx);
         if (action === 'assign')     asignarEquipoBkt(ronda, idx);
     });
+
+    const assignList = document.getElementById('bkt-assign-list');
+    if (assignList) {
+        assignList.addEventListener('click', e => {
+            const btn = e.target.closest('.bkt-assign-item');
+            if (!btn) return;
+            _assignPending.team = btn.dataset.team;
+            document.querySelectorAll('.bkt-assign-item').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            const confirmDiv = document.getElementById('bkt-assign-confirm');
+            if (confirmDiv) confirmDiv.style.display = 'flex';
+        });
+    }
+
+    const assignSearch = document.getElementById('bkt-assign-search');
+    if (assignSearch) {
+        assignSearch.addEventListener('input', e => _renderModalTeams(e.target.value));
+    }
 
     fetchAndRenderBracket();
 });

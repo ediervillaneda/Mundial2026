@@ -4,69 +4,26 @@
     <div class="page-header">
         <h1>Eliminatorias</h1>
         <div class="header-actions">
-            <button class="btn" id="btn-generar" onclick="generarEliminatorias()"
-                {% if generado or clasificados.total|length < 32 %}style="display:none"{% endif %}>
-                🎯 Generar Bracket
-            </button>
-            <button class="btn btn-secondary" id="btn-regenerar" onclick="reiniciarEliminatorias()"
-                {% if not generado %}style="display:none"{% endif %}>
-                🔄 Re-generar
-            </button>
-        </div>
-    </div>
-
-    <div id="clasificados-section" {% if generado %}style="display:none"{% endif %}>
-        <div class="clasificados-section">
-            <h2>Clasificados a 16avos de Final</h2>
-            {% if clasificados.total|length < 32 %}
-            <div class="alert alert-warning">
-                ⚠️ Se necesitan 32 clasificados. Actualmente: {{ clasificados.total|length }}
-                (<strong>{{ clasificados.primeros|length }}</strong> primeros,
-                 <strong>{{ clasificados.segundos|length }}</strong> segundos,
-                 <strong>{{ clasificados.terceros|length }}</strong> mejores terceros)
-            </div>
-            {% else %}
-            <div class="alert alert-success">✅ 32 equipos clasificados. ¡Genera el bracket!</div>
-            {% endif %}
-
-            {% if clasificados.primeros %}
-            <h3>🥇 Primeros de Grupo ({{ clasificados.primeros|length }})</h3>
-            <div class="clasificados-list">
-                {% for eq in clasificados.primeros %}
-                <span class="team-chip gold">#{{ loop.index }} {{ eq.team }} <small>({{ eq.pts }}pts, {{ eq.grupo }})</small></span>
-                {% endfor %}
-            </div>
-            {% endif %}
-
-            {% if clasificados.segundos %}
-            <h3>🥈 Segundos de Grupo ({{ clasificados.segundos|length }})</h3>
-            <div class="clasificados-list">
-                {% for eq in clasificados.segundos %}
-                <span class="team-chip silver">#{{ loop.index + clasificados.primeros|length }} {{ eq.team }} <small>({{ eq.pts }}pts, {{ eq.grupo }})</small></span>
-                {% endfor %}
-            </div>
-            {% endif %}
-
-            {% if clasificados.terceros %}
-            <h3>🥉 Mejores Terceros ({{ clasificados.terceros|length }})</h3>
-            <div class="clasificados-list">
-                {% for eq in clasificados.terceros %}
-                <span class="team-chip bronze">#{{ loop.index + clasificados.primeros|length + clasificados.segundos|length }} {{ eq.team }} <small>({{ eq.pts }}pts, {{ eq.grupo }})</small></span>
-                {% endfor %}
-            </div>
-            {% endif %}
-
-            {% if clasificados.total|length == 32 %}
-            <div style="text-align:center;margin-top:2rem">
-                <button class="btn btn-lg" onclick="generarEliminatorias()">🎯 Generar Bracket de Eliminatorias</button>
-                <p class="help-text">Empareja 1° vs 32°, 2° vs 31°, etc.</p>
-            </div>
-            {% endif %}
+            <span class="clasificados-badge" id="clasificados-counter">— / 32 clasificados</span>
+            <button class="btn btn-secondary" onclick="reiniciarEliminatorias()">🔄 Reiniciar</button>
         </div>
     </div>
 
     <div id="bracket-root"></div>
 </div>
+
+<dialog id="bkt-assign-modal" class="bkt-modal">
+    <div class="bkt-modal-header">
+        <span>Asignar equipo</span>
+        <button class="btn-tiny" onclick="document.getElementById('bkt-assign-modal').close()">✕</button>
+    </div>
+    <input type="search" id="bkt-assign-search" placeholder="Buscar equipo..." autocomplete="off">
+    <div id="bkt-assign-list" class="bkt-assign-list"></div>
+    <div id="bkt-assign-confirm" class="bkt-modal-slots" style="display:none">
+        <button class="btn" onclick="confirmarAsignacion('team1')">→ Local</button>
+        <button class="btn" onclick="confirmarAsignacion('team2')">→ Visitante</button>
+    </div>
+</dialog>
 
 <script>
 window._clasificadosData = {{ clasificados.total|tojson|safe }};
