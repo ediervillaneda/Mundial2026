@@ -151,17 +151,6 @@ function activarEdicionMarcadorGD(id) {
     document.getElementById(`inline-s1-${id}`)?.focus();
 }
 
-async function generarEliminatorias() {
-    if (!confirm('¿Generar bracket de eliminatorias? Se emparejarán los 32 equipos.')) return;
-    const result = await fetchJSON('/api/eliminatorias/generar', { method: 'POST' });
-    if (result.success) {
-        document.getElementById('clasificados-section')?.style && (document.getElementById('clasificados-section').style.display = 'none');
-        await fetchAndRenderBracket();
-    } else {
-        alert('Error: ' + (result.error || 'No se pudo generar'));
-    }
-}
-
 async function reiniciarEliminatorias() {
     if (!confirm('¿Reiniciar eliminatorias? Se perderán los resultados KO.')) return;
     await fetchJSON('/api/eliminatorias/reiniciar', { method: 'POST' });
@@ -446,9 +435,9 @@ function asignarEquipoBkt(ronda, idx) {
     _assignPending = { ronda, idx, team: null };
     const modal = document.getElementById('bkt-assign-modal');
     const searchInput = document.getElementById('bkt-assign-search');
-    const confirm = document.getElementById('bkt-assign-confirm');
+    const confirmDiv = document.getElementById('bkt-assign-confirm');
     if (searchInput) searchInput.value = '';
-    if (confirm) confirm.style.display = 'none';
+    if (confirmDiv) confirmDiv.style.display = 'none';
     document.querySelectorAll('.bkt-assign-item').forEach(b => b.classList.remove('selected'));
     _renderModalTeams('');
     modal?.showModal();
@@ -484,6 +473,24 @@ document.addEventListener('DOMContentLoaded', () => {
         if (action === 'edit')       editKOMatch(ronda, idx);
         if (action === 'assign')     asignarEquipoBkt(ronda, idx);
     });
+
+    const assignList = document.getElementById('bkt-assign-list');
+    if (assignList) {
+        assignList.addEventListener('click', e => {
+            const btn = e.target.closest('.bkt-assign-item');
+            if (!btn) return;
+            _assignPending.team = btn.dataset.team;
+            document.querySelectorAll('.bkt-assign-item').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            const confirmDiv = document.getElementById('bkt-assign-confirm');
+            if (confirmDiv) confirmDiv.style.display = 'flex';
+        });
+    }
+
+    const assignSearch = document.getElementById('bkt-assign-search');
+    if (assignSearch) {
+        assignSearch.addEventListener('input', e => _renderModalTeams(e.target.value));
+    }
 
     fetchAndRenderBracket();
 });
