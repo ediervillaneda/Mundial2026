@@ -163,9 +163,8 @@ async function generarEliminatorias() {
 }
 
 async function reiniciarEliminatorias() {
-    if (!confirm('¿Reiniciar eliminatorias? Se perderán los resultados actuales.')) return;
+    if (!confirm('¿Reiniciar eliminatorias? Se perderán los resultados KO.')) return;
     await fetchJSON('/api/eliminatorias/reiniciar', { method: 'POST' });
-    document.getElementById('clasificados-section')?.style && (document.getElementById('clasificados-section').style.display = '');
     await fetchAndRenderBracket();
 }
 
@@ -199,7 +198,8 @@ async function guardarKOMatch(ronda, idx) {
     });
 
     if (result.success) {
-        await fetchAndRenderBracket();
+        await fetchAndRenderBracket();   // primero re-render, card destino queda en DOM
+        triggerArriveAnimation(ronda, idx);  // después animar card ya existente
     } else {
         alert('Error al guardar');
     }
@@ -398,24 +398,75 @@ function togglePenalesBkt(ronda, idx) {
     el.style.display = el.style.display === 'none' ? 'flex' : 'none';
 }
 
-function asignarEquipoBkt(ronda, idx) {
+function editKOMatch(ronda, idx) {
+    if (!_lastKnockout) return;
+    const match = (ronda === 'third_place' || ronda === 'final')
+        ? _lastKnockout[ronda]
+        : _lastKnockout[ronda]?.matches?.[idx];
+    if (!match) return;
+    const card = document.querySelector(`.bkt-card[data-ronda="${ronda}"][data-idx="${idx}"]`);
+    if (!card) return;
+    const editHtml = renderMatch({ ...match, played: false }, ronda, idx);
+    card.outerHTML = editHtml;
+}
+
+function triggerArriveAnimation(ronda, idx) {
+    const SIGUIENTE_JS = {
+        'round_of_32':    { ronda: 'round_of_16',    getIdx: i => Math.floor(i / 2) },
+        'round_of_16':    { ronda: 'quarter_finals', getIdx: i => Math.floor(i / 2) },
+        'quarter_finals': { ronda: 'semi_finals',    getIdx: i => Math.floor(i / 2) },
+        'semi_finals':    { ronda: 'final',          getIdx: () => 0 },
+    };
+    const next = SIGUIENTE_JS[ronda];
+    if (!next) return;
+    const nextIdx = next.getIdx(idx);
+    const card = document.querySelector(`.bkt-card[data-ronda="${next.ronda}"][data-idx="${nextIdx}"]`);
+    if (!card) return;
+    card.classList.remove('bkt-arrive');
+    void card.offsetWidth;
+    card.classList.add('bkt-arrive');
+    setTimeout(() => card.classList.remove('bkt-arrive'), 750);
+}
+
+let _assignPending = { ronda: null, idx: null, team: null };
+
+function _renderModalTeams(filtro) {
     const equipos = (window._clasificadosData || []).map(e => e.team);
-    const sel = prompt(`Selecciona equipo (escribe el nombre):\n\n${equipos.map((e, i) => `${i + 1}. ${e}`).join('\n')}`);
-    if (!sel) return;
+    const filtrados = filtro
+        ? equipos.filter(e => e.toLowerCase().includes(filtro.toLowerCase()))
+        : equipos;
+    const list = document.getElementById('bkt-assign-list');
+    if (!list) return;
+    list.innerHTML = filtrados
+        .map(e => `<button class="bkt-assign-item" data-team="${e}">${flagImg(e)} ${e}</button>`)
+        .join('');
+}
 
-    const equipo = equipos.find(e => e.toLowerCase().includes(sel.toLowerCase()));
-    if (!equipo) { alert('Equipo no encontrado.'); return; }
+function asignarEquipoBkt(ronda, idx) {
+    _assignPending = { ronda, idx, team: null };
+    const modal = document.getElementById('bkt-assign-modal');
+    const searchInput = document.getElementById('bkt-assign-search');
+    const confirm = document.getElementById('bkt-assign-confirm');
+    if (searchInput) searchInput.value = '';
+    if (confirm) confirm.style.display = 'none';
+    document.querySelectorAll('.bkt-assign-item').forEach(b => b.classList.remove('selected'));
+    _renderModalTeams('');
+    modal?.showModal();
+}
 
-    const slot = prompt('¿Posición? (team1 o team2)');
-    if (!slot || !['team1', 'team2'].includes(slot)) return;
-
-    fetchJSON('/api/eliminatorias/asignar', {
+async function confirmarAsignacion(slot) {
+    if (!_assignPending.team || !_assignPending.ronda) return;
+    const { ronda, idx, team } = _assignPending;
+    document.getElementById('bkt-assign-modal').close();
+    const d = await fetchJSON('/api/eliminatorias/asignar', {
         method: 'POST',
-        body: JSON.stringify({ ronda, idx, slot, team: equipo }),
-    }).then(d => {
-        if (d.success) fetchAndRenderBracket();
-        else alert('Error: ' + d.error);
+        body: JSON.stringify({ ronda, idx, slot, team }),
     });
+    if (d.success) {
+        await fetchAndRenderBracket();
+    } else {
+        alert('Error: ' + d.error);
+    }
 }
 
 // Event delegation: survives DOM re-renders
@@ -430,6 +481,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const idx = +btn.dataset.idx;
         if (action === 'save')       guardarKOMatch(ronda, idx);
         if (action === 'toggle-pen') togglePenalesBkt(ronda, idx);
+        if (action === 'edit')       editKOMatch(ronda, idx);
         if (action === 'assign')     asignarEquipoBkt(ronda, idx);
     });
 
