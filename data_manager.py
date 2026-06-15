@@ -484,11 +484,13 @@ class MundialData:
         terceros = []
 
         for grupo, tabla in tablas.items():
-            if len(tabla) >= 3:
-                t = list(tabla)
-                primeros.append({**t[0], "grupo": grupo})
-                segundos.append({**t[1], "grupo": grupo})
-                terceros.append({**t[2], "grupo": grupo})
+            elegibles = [t for t in tabla if t.get("pj", 0) >= 1]
+            if len(elegibles) >= 1:
+                primeros.append({**elegibles[0], "grupo": grupo})
+            if len(elegibles) >= 2:
+                segundos.append({**elegibles[1], "grupo": grupo})
+            if len(elegibles) >= 3:
+                terceros.append({**elegibles[2], "grupo": grupo})
 
         primeros.sort(key=lambda x: (x["pts"], x["gd"], x["gf"]), reverse=True)
         segundos.sort(key=lambda x: (x["pts"], x["gd"], x["gf"]), reverse=True)
