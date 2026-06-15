@@ -229,38 +229,74 @@ function flagImg(nombre) {
 }
 
 function renderMatch(match, ronda, idx) {
-    const t1 = match.team1 || '—';
-    const t2 = match.team2 || '—';
-    const hasTeams = !!(match.team1 && match.team2);
+    const t1 = match.team1 || null;
+    const t2 = match.team2 || null;
+    const hasTeams = !!(t1 && t2);
     const w = match.winner;
-    const n1 = 'bkt-name' + (match.team1 ? ' assigned' : '') + (w && w === match.team1 ? ' winner' : '');
-    const n2 = 'bkt-name' + (match.team2 ? ' assigned' : '') + (w && w === match.team2 ? ' winner' : '');
-    const s1 = match.score1 !== null && match.score1 !== undefined ? match.score1 : '';
-    const s2 = match.score2 !== null && match.score2 !== undefined ? match.score2 : '';
-    const p1 = match.penalties1 !== null && match.penalties1 !== undefined ? match.penalties1 : '';
-    const p2 = match.penalties2 !== null && match.penalties2 !== undefined ? match.penalties2 : '';
-    const penDisplay = (match.penalties1 !== null && match.penalties1 !== undefined) ? 'flex' : 'none';
     const isFinal = ronda === 'final' || ronda === 'third_place';
     const cardExtra = ronda === 'final' ? 'bkt-final' : ronda === 'third_place' ? 'bkt-third' : '';
-    const dis = hasTeams ? '' : 'disabled';
 
-    return `<div class="bkt-card ${match.played ? 'bkt-played' : ''} ${cardExtra}">
+    // Estado 1: sin equipos (o solo uno)
+    if (!hasTeams) {
+        return `<div class="bkt-card ${cardExtra} bkt-empty" data-ronda="${ronda}" data-idx="${idx}">
+            <div class="bkt-team"><span class="bkt-name">${t1 ? flagImg(t1) : '—'}</span></div>
+            <div class="bkt-team"><span class="bkt-name">${t2 ? flagImg(t2) : '—'}</span></div>
+            <div class="bkt-actions">
+                <button class="btn-tiny" data-action="assign" data-ronda="${ronda}" data-idx="${idx}">👤</button>
+            </div>
+        </div>`;
+    }
+
+    const n1 = 'bkt-name assigned' + (w && w === t1 ? ' winner' : '');
+    const n2 = 'bkt-name assigned' + (w && w === t2 ? ' winner' : '');
+    const row1Extra = (w && w === t1) ? ' winner-row' : '';
+    const row2Extra = (w && w === t2) ? ' winner-row' : '';
+
+    // Estado 3: jugado → score como texto
+    if (match.played) {
+        const s1 = match.score1 ?? '';
+        const s2 = match.score2 ?? '';
+        const p1 = match.penalties1 != null ? ` (${match.penalties1})` : '';
+        const p2 = match.penalties2 != null ? ` (${match.penalties2})` : '';
+        return `<div class="bkt-card bkt-played ${cardExtra}" data-ronda="${ronda}" data-idx="${idx}">
+            <div class="bkt-team${row1Extra}">
+                <span class="${n1}">${flagImg(t1)}</span>
+                <span class="bkt-score-display">${s1}${p1}</span>
+            </div>
+            <div class="bkt-sep-center">—</div>
+            <div class="bkt-team${row2Extra}">
+                <span class="${n2}">${flagImg(t2)}</span>
+                <span class="bkt-score-display">${s2}${p2}</span>
+            </div>
+            <div class="bkt-actions">
+                <button class="btn-tiny" data-action="edit" data-ronda="${ronda}" data-idx="${idx}">✏️</button>
+            </div>
+        </div>`;
+    }
+
+    // Estado 2: con equipos, sin jugar → inputs activos
+    const s1v = match.score1 != null ? match.score1 : '';
+    const s2v = match.score2 != null ? match.score2 : '';
+    const pen1v = match.penalties1 != null ? match.penalties1 : '';
+    const pen2v = match.penalties2 != null ? match.penalties2 : '';
+    const penDisplay = match.penalties1 != null ? 'flex' : 'none';
+    return `<div class="bkt-card ${cardExtra}" data-ronda="${ronda}" data-idx="${idx}">
         <div class="bkt-team">
             <span class="${n1}">${flagImg(t1)}</span>
-            <input type="number" class="bkt-score" id="score-${ronda}-${idx}-1" value="${s1}" min="0" placeholder="0" ${dis}>
+            <input type="number" class="bkt-score" id="score-${ronda}-${idx}-1" value="${s1v}" min="0" placeholder="0">
             <span class="bkt-sep">-</span>
-            <input type="number" class="bkt-score" id="score-${ronda}-${idx}-2" value="${s2}" min="0" placeholder="0" ${dis}>
+            <input type="number" class="bkt-score" id="score-${ronda}-${idx}-2" value="${s2v}" min="0" placeholder="0">
         </div>
         <div class="bkt-team"><span class="${n2}">${flagImg(t2)}</span></div>
         <div class="bkt-penales" id="bkt-pen-${ronda}-${idx}" style="display:${penDisplay}">
             Pen:
-            <input type="number" class="bkt-pen" id="pen-${ronda}-${idx}-1" value="${p1}" min="0" placeholder="-" ${dis}>
+            <input type="number" class="bkt-pen" id="pen-${ronda}-${idx}-1" value="${pen1v}" min="0" placeholder="-">
             <span>-</span>
-            <input type="number" class="bkt-pen" id="pen-${ronda}-${idx}-2" value="${p2}" min="0" placeholder="-" ${dis}>
+            <input type="number" class="bkt-pen" id="pen-${ronda}-${idx}-2" value="${pen2v}" min="0" placeholder="-">
         </div>
         <div class="bkt-actions">
-            ${hasTeams ? `<button class="btn-tiny" data-action="save" data-ronda="${ronda}" data-idx="${idx}">💾</button>` : ''}
-            ${hasTeams && !isFinal ? `<button class="btn-tiny" data-action="toggle-pen" data-ronda="${ronda}" data-idx="${idx}">⚽</button>` : ''}
+            <button class="btn-tiny" data-action="save" data-ronda="${ronda}" data-idx="${idx}">💾</button>
+            ${!isFinal ? `<button class="btn-tiny" data-action="toggle-pen" data-ronda="${ronda}" data-idx="${idx}">⚽</button>` : ''}
             <button class="btn-tiny" data-action="assign" data-ronda="${ronda}" data-idx="${idx}">👤</button>
         </div>
     </div>`;
