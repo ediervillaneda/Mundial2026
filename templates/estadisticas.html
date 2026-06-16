@@ -206,7 +206,11 @@
                 <option value="">-- Selecciona un partido --</option>
                 {% for p in todos_partidos %}
                 {% if p.played %}
-                <option value="{{ p.id }}">{{ p.group }} · {{ p.team1 }} {{ p.score1 }}–{{ p.score2 }} {{ p.team2 }}</option>
+                {% set tiene_stats = p.estadisticas_colectivas or p.goles %}
+                <option value="{{ p.id }}"
+                    {% if tiene_stats %}style="text-decoration:line-through;opacity:0.45;color:#6b7280"{% endif %}>
+                    {{ p.group }} · {{ p.team1 }} {{ p.score1 }}–{{ p.score2 }} {{ p.team2 }}{% if tiene_stats %} ✓{% endif %}
+                </option>
                 {% endif %}
                 {% endfor %}
             </select>
@@ -378,7 +382,7 @@ function actualizarTextoPrompt() {
     const prompt = `Tengo un partido de fútbol del Mundial 2026: ${infoPartido}.
 
 Dame las estadísticas del partido en el siguiente JSON exacto.
-Completa SOLO con datos reales. Si no tienes un dato, usa null.
+Completa SOLO con datos reales. Si no tienes un dato, busca alguna otra fuente de confianza, nunca entregues un valor nulo.
 
 IMPORTANTE — usa EXACTAMENTE estos nombres como claves (sin traducir, sin prefijos como "Selección de fútbol de"):
   equipo1 = "${t1}"
