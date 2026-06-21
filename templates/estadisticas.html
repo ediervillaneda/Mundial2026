@@ -204,7 +204,7 @@
             <label>Partido</label>
             <select id="sel-partido" onchange="onCambiarPartido()" style="background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:0.5rem 0.75rem;border-radius:6px;font-family:Outfit,sans-serif;font-size:0.875rem;width:100%">
                 <option value="">-- Selecciona un partido --</option>
-                {% for p in todos_partidos %}
+                {% for p in todos_partidos | reverse %}
                 {% if p.played %}
                 {% set tiene_stats = p.estadisticas_colectivas or p.goles %}
                 <option value="{{ p.id }}"
@@ -231,7 +231,7 @@
                 <label style="margin:0">JSON de estadísticas</label>
                 <button class="btn-tiny" onclick="cargarEjemplo()" title="Insertar JSON de ejemplo">Ver ejemplo</button>
             </div>
-            <textarea id="stats-json" rows="14" placeholder='{
+            <textarea id="stats-json" rows="14" onfocus="if(this.value)this.value=''" placeholder='{
   "goles": [
     {"minuto": 9, "equipo": "México", "autor": "Julián Quiñones"}
   ],
@@ -265,7 +265,6 @@
 .est-nombre { font-weight:600; }
 .est-goles { width:60px; }
 .goles-badge { display:inline-block; background:var(--accent); color:#050D0A; font-weight:700; font-family:'Syne',sans-serif; font-size:0.9rem; padding:0.15rem 0.55rem; border-radius:20px; }
-.est-minutos { }
 .minuto-chip { display:inline-block; background:rgba(16,210,130,0.1); border:1px solid rgba(16,210,130,0.2); color:var(--accent); font-size:0.68rem; padding:0.1rem 0.35rem; border-radius:10px; margin:0.05rem; }
 
 /* Rank lists */
