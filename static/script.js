@@ -321,12 +321,12 @@ function singleCol(match, ronda, offset, label) {
 
 // ── Bracket Labels y State ────────────────────────────────────────
 const RONDA_LABELS = {
-    'round_of_32':    '16avos · 29 Jun – 3 Jul',
-    'round_of_16':    'Octavos · 5 – 8 Jul',
-    'quarter_finals': 'Cuartos · 11 – 12 Jul',
-    'semi_finals':    'Semis · 15 – 16 Jul',
-    'final':          'Final · 19 Jul',
-    'third_place':    '3er Puesto · 19 Jul',
+    'round_of_32':    'Dieciseisavos',
+    'round_of_16':    'Octavos de final',
+    'quarter_finals': 'Cuartos de final',
+    'semi_finals':    'Semifinal',
+    'final':          'Final',
+    'third_place':    '3er Puesto',
 };
 
 let _lastKnockout = null;
@@ -337,14 +337,7 @@ function renderBracket(ko) {
     const qf  = ko.quarter_finals.matches;
     const sf  = ko.semi_finals.matches;
 
-    const leftHalf = `<div class="bkt-half bkt-half-l">
-        ${col(r32.slice(0, 8), 'round_of_32', 0, RONDA_LABELS['round_of_32'])}
-        ${col(r16.slice(0, 4), 'round_of_16', 0, RONDA_LABELS['round_of_16'])}
-        ${col(qf.slice(0, 2),  'quarter_finals', 0, RONDA_LABELS['quarter_finals'])}
-        ${singleCol(sf[0], 'semi_finals', 0, RONDA_LABELS['semi_finals'])}
-    </div>`;
-
-    const center = `<div class="bkt-center">
+    const endCol = `<div class="bkt-center">
         <div>
             <div class="bkt-center-label">${RONDA_LABELS['final']}</div>
             ${renderMatch(ko.final, 'final', 0)}
@@ -355,14 +348,15 @@ function renderBracket(ko) {
         </div>
     </div>`;
 
-    const rightHalf = `<div class="bkt-half bkt-half-r">
-        ${singleCol(sf[1], 'semi_finals', 1, RONDA_LABELS['semi_finals'])}
-        ${col(qf.slice(2, 4),  'quarter_finals', 2, RONDA_LABELS['quarter_finals'])}
-        ${col(r16.slice(4, 8), 'round_of_16', 4, RONDA_LABELS['round_of_16'])}
-        ${col(r32.slice(8, 16),'round_of_32', 8, RONDA_LABELS['round_of_32'])}
-    </div>`;
-
-    return `<div class="bkt-wrapper">${leftHalf}${center}${rightHalf}</div>`;
+    return `<div class="bracket-scroll"><div class="bkt-wrapper">
+        <div class="bkt-half bkt-half-l">
+            ${col(r32, 'round_of_32', 0, RONDA_LABELS['round_of_32'])}
+            ${col(r16, 'round_of_16', 0, RONDA_LABELS['round_of_16'])}
+            ${col(qf,  'quarter_finals', 0, RONDA_LABELS['quarter_finals'])}
+            ${col(sf,  'semi_finals', 0, RONDA_LABELS['semi_finals'])}
+        </div>
+        ${endCol}
+    </div></div>`;
 }
 
 async function fetchAndRenderBracket() {

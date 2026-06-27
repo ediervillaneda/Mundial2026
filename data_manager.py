@@ -477,6 +477,18 @@ class MundialData:
             g: self.calcular_tabla_grupo(g) for g in sorted(self.data["groups"].keys())
         }
 
+    def _calcular_fair_play(self, equipo):
+        puntos = 0
+        for m in self.data["matches"]:
+            ec = m.get("estadisticas_colectivas", {})
+            amarillas = ec.get("tarjetas_amarillas", {})
+            rojas = ec.get("tarjetas_rojas", {})
+            if equipo in amarillas:
+                puntos += amarillas[equipo]
+            if equipo in rojas:
+                puntos += rojas[equipo] * 3
+        return puntos
+
     def obtener_clasificados_a_eliminatorias(self):
         tablas = self.calcular_todos_grupos()
         primeros = []
@@ -494,7 +506,10 @@ class MundialData:
 
         primeros.sort(key=lambda x: (x["pts"], x["gd"], x["gf"]), reverse=True)
         segundos.sort(key=lambda x: (x["pts"], x["gd"], x["gf"]), reverse=True)
-        terceros.sort(key=lambda x: (x["pts"], x["gd"], x["gf"]), reverse=True)
+        terceros.sort(
+            key=lambda x: (x["pts"], x["gd"], x["gf"], x.get("pg", 0), -self._calcular_fair_play(x["team"])),
+            reverse=True,
+        )
 
         mejores_terceros = terceros[:8]
 
@@ -507,24 +522,113 @@ class MundialData:
 
         return clasificados
 
+    # Bracket oficial FIFA 2026: 16 cruces R32 por posición de grupo
+    # '1X'/'2X' = 1°/2° del grupo X | '3X' = 3° fijo del grupo X | '3XXXX' = 3° variable
+    _FIFA_2026_R32 = [
+        ("2A", "2B"),      # KO-1
+        ("1C", "2F"),      # KO-2
+        ("1E", "3D"),      # KO-3
+        ("1F", "2C"),      # KO-4
+        ("2E", "2I"),      # KO-5
+        ("1I", "3F"),      # KO-6
+        ("1A", "3CEFHI"),  # KO-7  variable
+        ("1L", "3EHJK"),   # KO-8  variable
+        ("1G", "3AEHJ"),   # KO-9  variable
+        ("1D", "3B"),      # KO-10
+        ("1H", "2J"),      # KO-11
+        ("2K", "2L"),      # KO-12
+        ("1B", "3EFGLJ"),  # KO-13 variable
+        ("2D", "2G"),      # KO-14
+        ("1J", "2H"),      # KO-15
+        ("1K", "3DEIJL"),  # KO-16 variable
+    ]
+
+    def _resolver_terceros_variable(self, terceros_por_grupo, grupos_fijos):
+        slots = {
+            "3CEFHI": set("CEFHI") - grupos_fijos,
+            "3EHJK":  set("EHJK")  - grupos_fijos,
+            "3AEHJ":  set("AEHJ")  - grupos_fijos,
+            "3EFGLJ": set("EFGLJ") - grupos_fijos,
+            "3DEIJL": set("DEIJL") - grupos_fijos,
+        }
+        disponibles = {g for g in terceros_por_grupo if g not in grupos_fijos}
+        asignacion = {}
+        sin_asignar = set(disponibles)
+        slots_libres = set(slots.keys())
+
+        cambiado = True
+        while cambiado and sin_asignar and slots_libres:
+            cambiado = False
+            for slot in list(slots_libres):
+                elegibles = slots[slot] & sin_asignar
+                if len(elegibles) == 1:
+                    g = next(iter(elegibles))
+                    asignacion[slot] = terceros_por_grupo[g]["team"]
+                    sin_asignar.discard(g)
+                    slots_libres.discard(slot)
+                    cambiado = True
+                    break
+            if not cambiado:
+                for g in list(sin_asignar):
+                    posibles = {s for s in slots_libres if g in slots[s]}
+                    if len(posibles) == 1:
+                        slot = next(iter(posibles))
+                        asignacion[slot] = terceros_por_grupo[g]["team"]
+                        sin_asignar.discard(g)
+                        slots_libres.discard(slot)
+                        cambiado = True
+                        break
+
+        if sin_asignar and slots_libres:
+            ordenados = sorted(sin_asignar,
+                key=lambda g: (terceros_por_grupo[g].get("pts", 0),
+                               terceros_por_grupo[g].get("gd", 0),
+                               terceros_por_grupo[g].get("gf", 0)),
+                reverse=True)
+            for slot in sorted(slots_libres):
+                for g in ordenados:
+                    if g in slots[slot]:
+                        asignacion[slot] = terceros_por_grupo[g]["team"]
+                        ordenados.remove(g)
+                        break
+
+        return asignacion
+
+    def _construir_equipos_r32(self, clasificados):
+        primeros = {t["grupo"]: t["team"] for t in clasificados["primeros"]}
+        segundos = {t["grupo"]: t["team"] for t in clasificados["segundos"]}
+        terceros_pg = {t["grupo"]: t for t in clasificados["terceros"]}
+
+        grupos_fijos = {spec[1] for _, spec in self._FIFA_2026_R32
+                        if spec.startswith("3") and len(spec) == 2}
+        terceros_var = self._resolver_terceros_variable(terceros_pg, grupos_fijos)
+
+        def equipo(spec):
+            if spec[0] == "1":
+                return primeros.get(spec[1])
+            if spec[0] == "2":
+                return segundos.get(spec[1])
+            if len(spec) == 2:
+                return terceros_pg.get(spec[1], {}).get("team")
+            return terceros_var.get(spec)
+
+        return [(equipo(s1), equipo(s2)) for s1, s2 in self._FIFA_2026_R32]
+
     def generar_eliminatorias(self):
         if self.data["knockout_generated"]:
             return "ya_generado"
 
         clasificados = self.obtener_clasificados_a_eliminatorias()
-        todos = clasificados["total"]
 
-        if len(todos) != 32:
+        if len(clasificados["total"]) != 32:
             return "faltan_clasificados"
 
-        todos_ordenados = sorted(
-            todos, key=lambda x: (x["pts"], x["gd"], x["gf"]), reverse=True
-        )
-
+        cruces = self._construir_equipos_r32(clasificados)
         ko = self.data["knockout"]
-        for i in range(16):
-            ko["round_of_32"]["matches"][i]["team1"] = todos_ordenados[i]["team"]
-            ko["round_of_32"]["matches"][i]["team2"] = todos_ordenados[31 - i]["team"]
+        for i, (t1, t2) in enumerate(cruces):
+            match = ko["round_of_32"]["matches"][i]
+            match["team1"] = t1
+            match["team2"] = t2
 
         self.data["knockout_generated"] = True
         self.guardar()
@@ -532,24 +636,18 @@ class MundialData:
 
     def get_knockout_live(self):
         clasificados = self.obtener_clasificados_a_eliminatorias()
-        todos = clasificados["total"]
-
-        todos_ordenados = sorted(
-            todos, key=lambda x: (x["pts"], x["gd"], x["gf"]), reverse=True
-        )
-
         ko = deepcopy(self.data["knockout"])
 
-        for i in range(16):
+        cruces = self._construir_equipos_r32(clasificados)
+        for i, (t1, t2) in enumerate(cruces):
             match = ko["round_of_32"]["matches"][i]
             if match.get("score1") is None and match.get("score2") is None:
-                match["team1"] = todos_ordenados[i]["team"] if i < len(todos_ordenados) else None
-                idx2 = 31 - i
-                match["team2"] = todos_ordenados[idx2]["team"] if idx2 < len(todos_ordenados) else None
+                match["team1"] = t1
+                match["team2"] = t2
 
         return {
             "knockout": ko,
-            "clasificados_count": len(todos_ordenados),
+            "clasificados_count": len(clasificados["total"]),
             "total_requeridos": 32,
         }
 
